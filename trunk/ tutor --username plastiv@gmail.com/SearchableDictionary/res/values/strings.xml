@@ -1,51 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-/*
-** Copyright 2010, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
--->
+<!-- /* ** Copyright 2010, The Android Open Source Project ** ** Licensed 
+	under the Apache License, Version 2.0 (the "License"); ** you may not use 
+	this file except in compliance with the License. ** You may obtain a copy 
+	of the License at ** ** http://www.apache.org/licenses/LICENSE-2.0 ** ** 
+	Unless required by applicable law or agreed to in writing, software ** distributed 
+	under the License is distributed on an "AS IS" BASIS, ** WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. ** See the License 
+	for the specific language governing permissions and ** limitations under 
+	the License. */ -->
 <resources>
 
-    <!-- The name of the application. -->
-    <string name="app_name">Searchable Dictionary</string>
+	<!-- The name of the application. -->
+	<string name="app_name">Searchable Dictionary</string>
 
-    <!-- The label for use as a searchable item -->
-    <string name="search_label">Dictionary</string>
+	<!-- The label for use as a searchable item -->
+	<string name="search_label">Dictionary</string>
 
-    <!-- The hint text that appears in the search box. -->
-    <string name="search_hint">Search the dictionary</string>
+	<!-- The hint text that appears in the search box. -->
+	<string name="search_hint">Search the dictionary</string>
 
-    <!-- The menu entry that invokes search. -->
-    <string name="menu_search">Search</string>
-    
-    <!-- The menu entry that update database. -->
-    <string name="menu_refresh">Update</string>
+	<!-- The menu entry that invokes search. -->
+	<string name="menu_search">Search</string>
 
-    <!-- The description that will show up in the search settings for this source.  -->
-    <string name="settings_description">Definitions of words</string>
+	<!-- The menu entry that open new dictionary -->
+	<string name="menu_add">Open Dictionary</string>
 
-    <!-- General instructions in the main activity. -->
-    <string name="search_instructions">Press the search key to look up a word</string>
+	<!-- The menu entry that open new dictionary from file -->
+	<string name="menu_file">From File</string>
 
-    <!-- Shown above search results when we receive a search request. -->
-    <plurals name="search_results">
-<!--  TODO this cause xml error    <item quantity="one">%d result for \"%s\": </item>-->
-<!--  TODO    <item quantity="other">%d results for \"%s\": </item>-->
-    </plurals>
+	<!-- The menu entry that open new dictionary from url -->
+	<string name="menu_url">From Url</string>
+	
+	<!-- The menu entry that open new dictionary from existing example in raw resourses -->
+	<string name="menu_example">From examples</string>
 
-    <!-- Search failure message. -->
-    <string name="no_results">No results found for \"%s\"</string>
+	<!-- The menu entry that refresh database -->
+	<string name="menu_refresh">Update</string>
+	
+	<!-- The menu entry that refresh database -->
+	<string name="menu_more">More</string>
+
+	<!-- The description that will show up in the search settings for this source. -->
+	<string name="settings_description">Definitions of words</string>
+
+	<!-- General instructions in the main activity. -->
+	<string name="search_instructions">Press the search key to look up a word</string>
+
+	<!-- Shown above search results when we receive a search request. -->
+	<plurals name="search_results">
+		<!-- TODO this cause xml error <item quantity="one">%d result for \"%s\": 
+			</item> -->
+		<!-- TODO <item quantity="other">%d results for \"%s\": </item> -->
+		<item quantity="one">%1$d  result for \"%2$s\": </item>
+		<item quantity="other">%1$d results for \"%2$s\":</item>
+	</plurals>
+
+	<!-- Search failure message. -->
+	<string name="no_results">No results found for \"%s\"</string>
+
+	<!-- Search failure message. -->
+	<string name="no_dictionary">Open a new dictionary, please</string>
 
 </resources>

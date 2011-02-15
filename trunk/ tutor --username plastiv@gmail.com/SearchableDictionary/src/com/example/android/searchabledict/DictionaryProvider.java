@@ -49,7 +49,7 @@ public class DictionaryProvider extends ContentProvider {
 	private static final int SEARCH_WORDS = 0;
 	private static final int GET_WORD = 1;
 	private static final int SEARCH_SUGGEST = 2;
-	private static final int REFRESH_SHORTCUT = 3;
+	private static final int REFRESH_SHORTCUT = 3;	
 	private static final UriMatcher sURIMatcher = buildUriMatcher();
 
 	/**
@@ -79,6 +79,7 @@ public class DictionaryProvider extends ContentProvider {
 				REFRESH_SHORTCUT);
 		matcher.addURI(AUTHORITY, SearchManager.SUGGEST_URI_PATH_SHORTCUT
 				+ "/*", REFRESH_SHORTCUT);
+		
 		return matcher;
 	}
 
@@ -110,9 +111,9 @@ public class DictionaryProvider extends ContentProvider {
 			return getSuggestions(selectionArgs[0]);
 		case SEARCH_WORDS:
 			if (selectionArgs == null) {
-				throw new IllegalArgumentException(
+				 throw new IllegalArgumentException(
 						"selectionArgs must be provided for the Uri: " + uri);
-			}
+			} 
 			return search(selectionArgs[0]);
 		case GET_WORD:
 			return getWord(uri);
@@ -132,7 +133,6 @@ public class DictionaryProvider extends ContentProvider {
 				 * to refresh shortcuts)
 				 */
 				SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID };
-
 		return mDictionary.getWordMatches(query, columns);
 	}
 
@@ -140,7 +140,6 @@ public class DictionaryProvider extends ContentProvider {
 		query = query.toLowerCase();
 		String[] columns = new String[] { BaseColumns._ID,
 				DictionaryDatabase.KEY_WORD, DictionaryDatabase.KEY_DEFINITION };
-
 		return mDictionary.getWordMatches(query, columns);
 	}
 
@@ -218,5 +217,4 @@ public class DictionaryProvider extends ContentProvider {
 			String[] selectionArgs) {
 		throw new UnsupportedOperationException();
 	}
-
 }

@@ -18,12 +18,10 @@ package com.example.android.searchabledict;
 
 import android.app.Activity;
 import android.app.SearchManager;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -75,7 +73,6 @@ public class SearchableDictionary extends Activity {
 	 *            The search query
 	 */
 	private void showResults(String query) {
-
 		Cursor cursor = managedQuery(DictionaryProvider.CONTENT_URI, null,
 				null, new String[] { query }, null);
 
@@ -85,6 +82,7 @@ public class SearchableDictionary extends Activity {
 					new Object[] { query }));
 		} else {
 			// Display the number of results
+
 			int count = cursor.getCount();
 			String countString = getResources().getQuantityString(
 					R.plurals.search_results, count,
@@ -135,19 +133,15 @@ public class SearchableDictionary extends Activity {
 		case R.id.search:
 			onSearchRequested();
 			return true;
-		case R.id.refresh:
-			// Toast.makeText(getApplicationContext(), "Wazzup!",
-			// Toast.LENGTH_SHORT).show();
-			ContentValues values = new ContentValues();
-			values.put(DictionaryDatabase.KEY_WORD, "Hellorrr");
-			values.put(DictionaryDatabase.KEY_DEFINITION, "0470285818");
-			try{
-			Uri uri = getContentResolver().insert(
-					DictionaryProvider.CONTENT_URI, values);
-			}
-			catch (Throwable e){
-				Log.e("Main","mystr",e);
-				}
+		case R.id.example:
+			DictionaryDatabase mDictionary = new DictionaryDatabase(getApplicationContext());
+			mDictionary.addWordsFromResourse(getResources());
+			return true;
+		case R.id.file:
+			Toast.makeText(getApplicationContext(), "Not yet implemented!", Toast.LENGTH_SHORT).show();
+			return true;
+		case R.id.url:
+			Toast.makeText(getApplicationContext(), "Not yet implemented:)", Toast.LENGTH_SHORT).show();
 			return true;
 		default:
 			return false;

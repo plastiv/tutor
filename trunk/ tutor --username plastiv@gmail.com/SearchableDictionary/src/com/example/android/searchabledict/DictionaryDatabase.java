@@ -16,8 +16,10 @@
 
 package com.example.android.searchabledict;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
@@ -106,6 +108,11 @@ public class DictionaryDatabase {
 		return mDatabaseOpenHelper.addWord(initialValues);
 	}
 
+	// TODO Javadoc
+	public long setWord(String word, String definition) {
+		return mDatabaseOpenHelper.addWord(word, definition);
+	}
+
 	/**
 	 * Returns a Cursor over all words that match the given query
 	 * 
@@ -136,6 +143,18 @@ public class DictionaryDatabase {
 		 * clause to use FTS_VIRTUAL_TABLE instead of KEY_WORD (to search across
 		 * the entire table, but sorting the relevance could be difficult.
 		 */
+	}
+
+	public Cursor getAllWords() {
+		String[] columns = new String[] { BaseColumns._ID,
+				DictionaryDatabase.KEY_WORD, DictionaryDatabase.KEY_DEFINITION,
+				/*
+				 * SearchManager.SUGGEST_COLUMN_SHORTCUT_ID, (only if you want
+				 * to refresh shortcuts)
+				 */
+				SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID };
+
+		return query(null, null, columns);
 	}
 
 	/**
@@ -174,12 +193,53 @@ public class DictionaryDatabase {
 		return cursor;
 	}
 
+	public synchronized void addWordsFromResourse(final Resources resources) {
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					parseFromResourse(resources);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}).start();
+	}
+
+	private synchronized void parseFromResourse(Resources resources)
+			throws IOException {
+		Log.d(TAG, "loading words");
+		mDatabaseOpenHelper.dropDataTable();
+		InputStream inputStream = resources.openRawResource(R.raw.irenanew);
+		List<WordsParserItem> parseCards = WordsParser.parse(inputStream);
+		for (WordsParserItem msg : parseCards) {
+			mDatabaseOpenHelper
+					.addWord(msg.getWord(), msg.getTranslationWord());
+		}
+		Log.d(TAG, "DONE loading words.");
+	}
+
+	private synchronized List<WordsParserItem> parseFromUrl(String xmlUrl)
+			throws IOException {
+		// TODO Check Internet connection availability
+		// TODO Check that url is correct
+		URL feedUrl = new URL(xmlUrl);
+
+		InputStream inputStream = feedUrl.openConnection().getInputStream();
+		return WordsParser.parse(inputStream);
+	}
+
+	private synchronized List<WordsParserItem> parseFromFile(String xmlFilename)
+			throws IOException {
+		// TODO Check SDCard availability
+
+		return WordsParser.parse(new FileInputStream(xmlFilename));
+	}
+
 	/**
 	 * This creates/opens the database.
 	 */
 	private static class DictionaryOpenHelper extends SQLiteOpenHelper {
 
-		private final Context mHelperContext;
 		private SQLiteDatabase mDatabase;
 
 		/*
@@ -194,48 +254,17 @@ public class DictionaryDatabase {
 
 		DictionaryOpenHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
-			mHelperContext = context;
 		}
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			mDatabase = db;
 			mDatabase.execSQL(FTS_TABLE_CREATE);
-			loadDictionary();
 		}
 
 		@Override
 		public void onOpen(SQLiteDatabase db) {
 			mDatabase = db;
-		}
-
-		/**
-		 * Starts a thread to load the database table with words
-		 */
-		private void loadDictionary() {
-			new Thread(new Runnable() {
-				public void run() {
-					try {
-						loadWords();
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				}
-			}).start();
-		}
-
-		private void loadWords() throws IOException {
-			Log.d(TAG, "Loading words...");
-
-			final Resources resources = mHelperContext.getResources();
-			InputStream inputStream = resources.openRawResource(R.raw.irenanew);
-
-			List<WordsParserItem> parseCards = WordsParser.parse(inputStream);
-			for (WordsParserItem msg : parseCards) {
-				addWord(msg.getWord(), msg.getTranslationWord());
-			}
-
-			Log.d(TAG, "DONE loading words.");
 		}
 
 		/**
@@ -258,6 +287,10 @@ public class DictionaryDatabase {
 		 */
 		public long addWord(ContentValues initialValues) {
 			return mDatabase.insert(FTS_VIRTUAL_TABLE, null, initialValues);
+		}
+
+		public void dropDataTable() {
+			onUpgrade(mDatabase, 0, 0);
 		}
 
 		@Override
