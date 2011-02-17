@@ -16,17 +16,11 @@
 
 package com.example.android.searchabledict;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 
 import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -156,6 +150,10 @@ public class DictionaryDatabase {
 
 		return query(null, null, columns);
 	}
+	
+	public void eraseData() {
+		mDatabaseOpenHelper.dropDataTable();
+	}
 
 	/**
 	 * Performs a database query.
@@ -191,48 +189,6 @@ public class DictionaryDatabase {
 			return null;
 		}
 		return cursor;
-	}
-
-	public synchronized void addWordsFromResourse(final Resources resources) {
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					parseFromResourse(resources);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}).start();
-	}
-
-	private synchronized void parseFromResourse(Resources resources)
-			throws IOException {
-		Log.d(TAG, "loading words");
-		mDatabaseOpenHelper.dropDataTable();
-		InputStream inputStream = resources.openRawResource(R.raw.irenanew);
-		List<WordsParserItem> parseCards = WordsParser.parse(inputStream);
-		for (WordsParserItem msg : parseCards) {
-			mDatabaseOpenHelper
-					.addWord(msg.getWord(), msg.getTranslationWord());
-		}
-		Log.d(TAG, "DONE loading words.");
-	}
-
-	private synchronized List<WordsParserItem> parseFromUrl(String xmlUrl)
-			throws IOException {
-		// TODO Check Internet connection availability
-		// TODO Check that url is correct
-		URL feedUrl = new URL(xmlUrl);
-
-		InputStream inputStream = feedUrl.openConnection().getInputStream();
-		return WordsParser.parse(inputStream);
-	}
-
-	private synchronized List<WordsParserItem> parseFromFile(String xmlFilename)
-			throws IOException {
-		// TODO Check SDCard availability
-
-		return WordsParser.parse(new FileInputStream(xmlFilename));
 	}
 
 	/**

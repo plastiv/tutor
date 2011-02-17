@@ -12,13 +12,14 @@
 	<item android:id="@+id/search" android:title="@string/menu_search"
 		android:icon="@drawable/ic_menu_search" />
 
-	<item android:id="@+id/add" android:title="@string/menu_add"
+	<item android:id="@+id/dictionary" android:title="@string/menu_dictionary"
 		android:icon="@drawable/ic_menu_more">
 		<!-- "open" submenu -->
 		<menu xmlns:android="http://schemas.android.com/apk/res/android">
 			<item android:id="@+id/file" android:title="@string/menu_file"/>
 			<item android:id="@+id/url" android:title="@string/menu_url" />
 			<item android:id="@+id/example" android:title="@string/menu_example" />
+			<item android:id="@+id/delete" android:title="@string/menu_delete" />
 		</menu>
 	</item>
 
