@@ -6,26 +6,37 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
-import android.content.Context;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.res.Resources;
 import android.util.Log;
+
+import com.example.android.searchabledict.DictionaryParser.Dictionary;
 
 public class Downloader {
 	private static final String TAG = "Downloader";
 
-	private DictionaryDatabase db;
+	private ContentResolver mContentResolver;
 
-	public Downloader(Context context) {
-		db = new DictionaryDatabase(context);
+	public Downloader(ContentResolver contentResolver) {
+		mContentResolver = contentResolver;
 	}
 
 	private void loadData(InputStream inputStream) {
 		// TODO How can i minimize cost for calling db.SetWord()
-		db.eraseData();
-		List<WordsParserItem> parseCards = WordsParser.parse(inputStream);
+		// FIXME Erase data somehow		
+		ContentResolver contentResolver = mContentResolver;
+		contentResolver.delete(DictionaryProvider.CONTENT_URI, null, null);
+		
+		List<Dictionary.Card> parseCards = DictionaryParser.parse(inputStream);
 
-		for (WordsParserItem msg : parseCards) {
-			db.setWord(msg.getWord(), msg.getTranslationWord());
+		for (Dictionary.Card i : parseCards) {
+			ContentValues newValue = new ContentValues();
+			newValue.put(DictionaryProvider.DatabaseHelper.KEY_WORD, i.getWord());
+			newValue.put(DictionaryProvider.DatabaseHelper.KEY_TRANSLATION, i.getTranslationWord());
+			newValue.put(DictionaryProvider.DatabaseHelper.KEY_EXAMPLE, i.getExample());
+			newValue.put(DictionaryProvider.DatabaseHelper.KEY_TRANSCRIPTION, i.getTranscription());
+			contentResolver.insert(DictionaryProvider.CONTENT_URI, newValue);
 		}
 	}
 

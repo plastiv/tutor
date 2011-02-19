@@ -169,9 +169,9 @@ public class SearchableDictionary extends Activity {
 	}
 
 	private void showAllResults() {
-		DictionaryDatabase mDictionary = new DictionaryDatabase(
-				getApplicationContext());
-		Cursor cursor = mDictionary.getAllWords();
+		// FIXME ShowAllWords
+		Cursor cursor = getContentResolver().query(
+				DictionaryProvider.CONTENT_URI, null, null, null, null);
 
 		if (cursor == null) {
 			// There are no results
@@ -235,8 +235,9 @@ public class SearchableDictionary extends Activity {
 
 	private void bindCursorView(Cursor cursor) {
 		// Specify the columns we want to display in the result
-		String[] from = new String[] { DictionaryDatabase.KEY_WORD,
-				DictionaryDatabase.KEY_DEFINITION };
+		String[] from = new String[] {
+				DictionaryProvider.DatabaseHelper.KEY_WORD,
+				DictionaryProvider.DatabaseHelper.KEY_TRANSLATION };
 
 		// Specify the corresponding layout elements where we want the
 		// columns to go
@@ -264,13 +265,13 @@ public class SearchableDictionary extends Activity {
 			try {
 				switch (taskId) {
 				case R.id.url:
-					new Downloader(getApplicationContext()).fromUrl(params[0]);
+					new Downloader(getContentResolver()).fromUrl(params[0]);
 					break;
 				case R.id.file:
-					new Downloader(getApplicationContext()).fromFile(params[0]);
+					new Downloader(getContentResolver()).fromFile(params[0]);
 					break;
 				case R.id.example:
-					new Downloader(getApplicationContext())
+					new Downloader(getContentResolver())
 							.fromResourse(getResources());
 					break;
 				}
@@ -286,26 +287,32 @@ public class SearchableDictionary extends Activity {
 		}
 	}
 
-	private class EraseDataTask extends AsyncTask<Void, Integer, Long> {
+	private class EraseDataTask extends AsyncTask<Void, Integer, Integer> {
 
 		protected void onPreExecute() {
 			showDialog(R.id.delete);
 		}
 
-		protected Long doInBackground(Void... params) {
+		protected Integer doInBackground(Void... params) {
 			try {
-				new DictionaryDatabase(getApplicationContext()).eraseData();
+				return getContentResolver().delete(
+						DictionaryProvider.CONTENT_URI, null, null);
 			} catch (Throwable e) {
-				Log.e(TAG, "EraseDataTask.doInBackground(): SqlExeption", e);
+				Log.e(TAG,
+						"EraseDataTask.doInBackground(): SqlExeption during delete all rows in table",
+						e);
 			}
-			return null;
+			// TODO How can i reach this code?
+			return Integer.MIN_VALUE;
 		}
 
-		protected void onPostExecute(Long result) {
+		protected void onPostExecute(Integer result) {
 			dismissDialog(R.id.delete);
-			showToast(getString(R.string.dictionary_empty));
+			String countString = getResources().getString(
+					R.string.words_deleted, result.intValue());
+			showToast(countString);
 			mListView.setAdapter(null);
+			showAllResults();			
 		}
 	}
-
 }

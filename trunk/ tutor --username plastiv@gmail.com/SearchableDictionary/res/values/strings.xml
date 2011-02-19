@@ -30,20 +30,21 @@
 
 	<!-- The menu entry that open new dictionary from url -->
 	<string name="menu_url">Open From Url</string>
-	
-	<!-- The menu entry that open new dictionary from existing example in raw resourses -->
-	<string name="menu_example">Open From Eexamples</string>
+
+	<!-- The menu entry that open new dictionary from existing example in raw 
+		resourses -->
+	<string name="menu_example">Open From Examples</string>
 
 	<!-- The menu entry that refresh database -->
 	<string name="menu_refresh">Update</string>
-	
+
 	<!-- The menu entry that refresh database -->
 	<string name="menu_delete">Delete Current</string>
-	
+
 	<!-- The menu entry -->
 	<string name="menu_more">More</string>
-	
-	<!-- The menu entry that provide operations with dictionary-->
+
+	<!-- The menu entry that provide operations with dictionary -->
 	<string name="menu_dictionary">Dictionary</string>
 
 	<!-- The description that will show up in the search settings for this source. -->
@@ -54,35 +55,46 @@
 
 	<!-- Shown above search results when we receive a search request. -->
 	<plurals name="search_results">
-		<item quantity="one">%1$d  result for \"%2$s\": </item>
+		<item quantity="one">%1$d result for \"%2$s\": </item>
 		<item quantity="other">%1$d results for \"%2$s\":</item>
 	</plurals>
 
 	<!-- Search failure message. -->
 	<string name="no_results">No results found for \"%s\"</string>
-	
+
 	<!-- Show number words in dictionary. -->
 	<string name="words_loaded">%1$d words are in dictionary</string>
 
+	<!-- Show number words in dictionary that were deleted. -->
+	<string name="words_deleted">%1$d words were deleted</string>
+
 	<!-- Search failure message. -->
 	<string name="dictionary_empty">No words. You can load more to application</string>
-	
+
 	<!-- Dialog status name -->
 	<string name="dlg_load">Loading. Please wait...</string>
-	
+
 	<!-- Dialog status name -->
 	<string name="dlg_delete">Deleting. Please wait...</string>
-	
+
 	<!-- Dialog name -->
 	<string name="dlg_load_file_label">Enter filename to download</string>
-	
+
 	<!-- Dialog name -->
 	<string name="dlg_load_url_label">Enter url to download</string>
-	
+
 	<!-- Button name -->
 	<string name="btn_cancel">Cancel</string>
-	
+
 	<!-- Button name -->
 	<string name="btn_ok">Ok</string>
 
+	<string name="html_word_desc">
+		&lt;h1>%1$s&lt;/h1>
+		&lt;i>%2$s&lt;/i>
+		&lt;p>%3$s&lt;/p>
+		&lt;p>
+		&lt;small>&lt;i>%4$s&lt;/i>&lt;/small>
+		&lt;/p>
+	</string>
 </resources>

@@ -18,7 +18,7 @@
 	<application android:label="@string/app_name" android:icon="@drawable/ic_dictionary">
 
 		<!-- The default activity of the app; displays search results. -->
-		<activity android:name=".SearchableDictionary" android:theme="@android:style/Theme.NoTitleBar"
+		<activity android:name="SearchableDictionary" android:theme="@android:style/Theme.NoTitleBar"
 			android:configChanges="keyboardHidden|orientation">
 
 			<intent-filter>
@@ -39,10 +39,10 @@
 		</activity>
 
 		<!-- Displays the definition of a word. -->
-		<activity android:name=".WordActivity" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="WordActivity" android:theme="@android:style/Theme.NoTitleBar" />
 
 		<!-- Provides search suggestions for words and their definitions. -->
-		<provider android:name=".DictionaryProvider"
+		<provider android:name="DictionaryProvider"
 			android:authorities="com.example.android.searchabledict.DictionaryProvider" />
 
 		<!-- Points to searchable activity so the whole app can invoke search. -->
