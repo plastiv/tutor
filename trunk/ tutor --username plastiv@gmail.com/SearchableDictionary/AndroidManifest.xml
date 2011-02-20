@@ -41,6 +41,10 @@
 		<!-- Displays the definition of a word. -->
 		<activity android:name="WordActivity" android:theme="@android:style/Theme.NoTitleBar" />
 
+		<!-- Displays the exercise -->
+		<activity android:name="ExerciseActivity"
+			android:windowSoftInputMode="stateVisible" android:theme="@android:style/Theme.NoTitleBar" />
+
 		<!-- Provides search suggestions for words and their definitions. -->
 		<provider android:name="DictionaryProvider"
 			android:authorities="com.example.android.searchabledict.DictionaryProvider" />

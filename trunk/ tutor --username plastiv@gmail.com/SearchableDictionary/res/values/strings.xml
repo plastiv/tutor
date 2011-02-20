@@ -43,6 +43,9 @@
 
 	<!-- The menu entry -->
 	<string name="menu_more">More</string>
+	
+	<!-- The menu entry -->
+	<string name="menu_exercise">Start exercise</string>
 
 	<!-- The menu entry that provide operations with dictionary -->
 	<string name="menu_dictionary">Dictionary</string>
@@ -85,6 +88,9 @@
 
 	<!-- Button name -->
 	<string name="btn_cancel">Cancel</string>
+	
+	<!-- Button name -->
+	<string name="btn_check">Check</string>
 
 	<!-- Button name -->
 	<string name="btn_ok">Ok</string>

@@ -136,6 +136,11 @@ public class SearchableDictionary extends Activity {
 		case R.id.delete:
 			new EraseDataTask().execute((Void) null);
 			return true;
+		case R.id.exercise:
+			Intent wordIntent = new Intent(getApplicationContext(),
+					ExerciseActivity.class);
+			startActivity(wordIntent);
+			return true;
 		default:
 			return false;
 		}

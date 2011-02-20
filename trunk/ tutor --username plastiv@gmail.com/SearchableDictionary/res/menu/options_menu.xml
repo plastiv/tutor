@@ -22,7 +22,7 @@
 			<item android:id="@+id/delete" android:title="@string/menu_delete" />
 		</menu>
 	</item>
-
-	<!-- <item android:id="@+id/refresh" android:title="@string/menu_refresh" -->
-	<!-- android:icon="@drawable/ic_menu_refresh" /> -->
+	
+	<item android:id="@+id/exercise" android:title="@string/menu_exercise"
+		android:icon="@drawable/ic_menu_add" />
 </menu>
