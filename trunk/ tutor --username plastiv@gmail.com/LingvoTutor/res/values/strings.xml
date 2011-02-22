@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="hello">Hello World, TutorList!</string>
-    <string name="app_name">Tutor List</string>
-    <string name="menu_openfile">Open File</string>
-    <string name="menu_openurl">Open Url</string>
-</resources>
