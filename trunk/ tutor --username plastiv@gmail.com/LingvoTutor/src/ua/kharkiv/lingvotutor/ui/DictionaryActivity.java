@@ -252,7 +252,7 @@ public class DictionaryActivity extends ListActivity {
 						"EraseDataTask.doInBackground(): SqlExeption during delete all rows in table",
 						e);
 			}
-			// TODO How can i reach this code?
+			// TODO How can i do this method void
 			return Integer.MIN_VALUE;
 		}
 

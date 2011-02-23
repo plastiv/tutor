@@ -29,7 +29,6 @@ public class WordsDetailActivity extends Activity {
 			Cursor cursor = managedQuery(wordUri, WordsQuery.PROJECTION,
 					null, null, null);
 			
-			// FIXME Put strings to resource
 			if (cursor.getCount() == 0) {
 				throw new IllegalArgumentException("No such Id " + wordUri);
 			} else {
