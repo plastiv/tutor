@@ -51,42 +51,37 @@ public class ExerciseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_exercise);
 
-		if (!getWordsCount()) {
-			showToast(getString(R.string.toast_open_dictionary_first));
-			finish();
-		} else {
+		((TextView) findViewById(R.id.title_text)).setText(getTitle());
 
-			((TextView) findViewById(R.id.title_text)).setText(getTitle());
+		mWord = (TextView) findViewById(R.id.txt_word);
+		mTranslation = (EditText) findViewById(R.id.edit_translation);
 
-			mWord = (TextView) findViewById(R.id.txt_word);
-			mTranslation = (EditText) findViewById(R.id.edit_translation);
+		random = new Random();
+		wordsCount = getWordsCount();
 
-			random = new Random();
+		// FIXME How to show soft input automatically when activity started
+		/*
+		 * InputMethodManager imm = (InputMethodManager)
+		 * mTranslation.getContext()
+		 * .getSystemService(Context.INPUT_METHOD_SERVICE);
+		 * imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+		 */
 
-			// FIXME How to show soft input automatically when activity started
-			/*
-			 * InputMethodManager imm = (InputMethodManager)
-			 * mTranslation.getContext()
-			 * .getSystemService(Context.INPUT_METHOD_SERVICE);
-			 * imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-			 */
-
-			mTranslation
-					.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-						@Override
-						public boolean onEditorAction(TextView v, int actionId,
-								KeyEvent event) {
-							if (actionId == EditorInfo.IME_ACTION_DONE) {
-								check();
-								return true;
-							}
-
-							return false;
+		mTranslation
+				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+					@Override
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						if (actionId == EditorInfo.IME_ACTION_DONE) {
+							check();
+							return true;
 						}
-					});
 
-			newTask();
-		}
+						return false;
+					}
+				});
+
+		newTask();
 	}
 
 	public void onBtnCheckClick(View v) {
@@ -127,7 +122,8 @@ public class ExerciseActivity extends Activity {
 				null, Words.DEFAULT_SORT);
 
 		if (cursor == null) {
-			throw new NullPointerException("ExerciseActivity.newTask() no such id:" + id);
+			throw new NullPointerException(
+					"ExerciseActivity.newTask() no such id:" + id);
 		} else {
 			cursor.moveToFirst();
 
@@ -138,20 +134,19 @@ public class ExerciseActivity extends Activity {
 		}
 	}
 
-	private boolean getWordsCount() {
+	private int getWordsCount() {
 		Cursor cursor = managedQuery(Dictionary.CONTENT_URI,
-				DictionaryQuery.PROJECTION, null, null,
-				Dictionary.DEFAULT_SORT);
+				DictionaryQuery.PROJECTION, null, null, Dictionary.DEFAULT_SORT);
 
 		if (cursor.getCount() == 0)
-			return false;
+			throw new UnsupportedOperationException(
+					"Could not load Exercise without words in dict");
 		else {
 			cursor.moveToFirst();
 			String stringCount = cursor
 					.getString(DictionaryQuery.DICTIONARY_WORDS_COUNT);
 			// FIXME Can random reach all words?
-			wordsCount = Integer.parseInt(stringCount) - 1;
-			return true;
+			return Integer.parseInt(stringCount) - 1;
 		}
 	}
 

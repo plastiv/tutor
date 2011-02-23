@@ -11,13 +11,12 @@
     <string name="title_exercise">Упражнение</string>
     
     <string name="empty_dictionary">Открытых словарей нет. Воспользуйтесь меню.</string>
-    <string name="empty_words">Воспользуйтесь меню словаря для загрузки большего количества слов.</string>
     
     <string name="home_btn_dictionary">Словарь</string>
     <string name="home_btn_exercise">Упражнение</string>
     <string name="home_btn_settings">Настройки</string>
     <string name="home_btn_words">Слова</string>
-    <string name="home_btn_exercise_2">Упражнение глаза</string>
+    <string name="home_btn_exercise_2">Упражнение</string>
     <string name="home_btn_about">О программе</string>
     
     <string name="btn_check">Проверить</string>
@@ -41,7 +40,7 @@
     <string name="lbl_status_text_2">Слов в словаре: "</string>
     <string name="lbl_status_text_1_empty">Нет открытых словарей</string>
     <string name="lbl_status_text_2_empty">Нет слов в словаре</string>
-    
+    <string name="lbl_words_list_emplty">Воспользуйтесь меню словаря для загрузки большего количества слов.</string>
     <string name="lbl_search_results">Результаты поиска</string>
     
     <string name="toast_not_implemented">Еще не сделано =)</string>

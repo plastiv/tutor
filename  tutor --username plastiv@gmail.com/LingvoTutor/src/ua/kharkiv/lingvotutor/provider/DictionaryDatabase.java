@@ -20,7 +20,7 @@ public class DictionaryDatabase extends SQLiteOpenHelper {
 	// NOTE: carefully update onUpgrade() when bumping database versions to make
 	// sure user data is saved.
 
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 
 	interface Tables {
 		String WORDS = "words";

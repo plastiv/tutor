@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
 
-    <LinearLayout style="@style/TitleBar">
-        <ImageButton style="@style/TitleBarAction"
-            android:contentDescription="@string/description_home"
-            android:src="@drawable/ic_title_home"
-            android:onClick="onHomeClick" />
+	<LinearLayout
+		style="@style/TitleBar">
+		<ImageButton
+			style="@style/TitleBarAction"
+			android:contentDescription="@string/description_home"
+			android:src="@drawable/ic_title_home"
+			android:onClick="onHomeClick" />
 
-        <ImageView style="@style/TitleBarSeparator" />
-        <TextView style="@style/TitleBarText" />
+		<ImageView
+			style="@style/TitleBarSeparator" />
+		<TextView
+			style="@style/TitleBarText" />
+		<ProgressBar
+			android:id="@+id/title_progress_bar"
+			style="?android:attr/progressBarStyleSmallTitle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="14dip"
+			android:layout_marginRight="15dip"
+			android:layout_marginTop="14dip" />
+		<ImageView
+			style="@style/TitleBarSeparator" />
+		<ImageButton
+			style="@style/TitleBarAction"
+			android:contentDescription="@string/description_search"
+			android:src="@drawable/ic_title_search"
+			android:onClick="onSearchClick" />
+	</LinearLayout>
 
-        <ImageView style="@style/TitleBarSeparator" />
-        <ImageButton style="@style/TitleBarAction"
-            android:contentDescription="@string/description_search"
-            android:src="@drawable/ic_title_search"
-            android:onClick="onSearchClick" />
-    </LinearLayout>
-
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
-    <TextView
-        android:id="@android:id/empty"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:text="@string/empty_words"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+	<ListView
+		android:id="@android:id/list"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent" />
 
 </LinearLayout>

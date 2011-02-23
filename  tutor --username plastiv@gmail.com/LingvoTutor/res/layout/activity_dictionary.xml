@@ -28,7 +28,7 @@
         android:id="@android:id/empty"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:text="@string/empty_words"
+        android:text="@string/empty_dictionary"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
