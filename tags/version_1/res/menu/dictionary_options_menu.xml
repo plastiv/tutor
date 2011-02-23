@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+		android:id="@+id/dictionary_menu_open"
+		android:title="@string/menu_dictionary_open">
+		<menu
+			xmlns:android="http://schemas.android.com/apk/res/android">
+			<item
+				android:id="@+id/dictionary_menu_file"
+				android:title="@string/menu_dictionary_file" />
+			<item
+				android:id="@+id/dictionary_menu_url"
+				android:title="@string/menu_dictionary_url" />
+			<item
+				android:id="@+id/dictionary_menu_example"
+				android:title="@string/menu_dictionary_example" />
+		</menu>
+	</item>
+	<item
+		android:id="@+id/dictionary_menu_delete"
+		android:title="@string/menu_dictionary_delete" />
+</menu>
+
