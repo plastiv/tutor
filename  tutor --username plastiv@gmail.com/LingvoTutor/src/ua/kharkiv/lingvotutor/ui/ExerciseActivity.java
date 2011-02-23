@@ -52,8 +52,7 @@ public class ExerciseActivity extends Activity {
 		setContentView(R.layout.activity_exercise);
 
 		if (!getWordsCount()) {
-			// TODO String to resource
-			showToast("Open dictionary first!");
+			showToast(getString(R.string.toast_open_dictionary_first));
 			finish();
 		} else {
 
@@ -128,8 +127,7 @@ public class ExerciseActivity extends Activity {
 				null, Words.DEFAULT_SORT);
 
 		if (cursor == null) {
-			// TODO String into resource
-			showToast("no such id in dict");
+			throw new NullPointerException("ExerciseActivity.newTask() no such id:" + id);
 		} else {
 			cursor.moveToFirst();
 

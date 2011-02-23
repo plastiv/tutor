@@ -39,12 +39,12 @@ public class HomeActivity extends Activity {
 
 	/** Handle "exercise2" button action. */
 	public void onExercise_2Click(View v) {
-		showToast("Not implemented yet =)");
+		showToast(getString(R.string.toast_not_implemented));
 	}
 
 	/** Handle "settings" button action. */
 	public void onSettingsClick(View v) {
-		showToast("Not implemented yet =)");
+		showToast(getString(R.string.toast_not_implemented));
 	}
 
 	/** Handle "about" button action. */
@@ -73,19 +73,18 @@ public class HomeActivity extends Activity {
 		Cursor cursor = managedQuery(Dictionary.CONTENT_URI,
 				DictionaryQuery.PROJECTION, null, null, Dictionary.DEFAULT_SORT);
 
-		// FIXME Put strings to resource
 		if (cursor.getCount() == 0) {
 			((TextView) findViewById(R.id.txt_status_line_1))
-					.setText("Current dictionary: none");
+					.setText(getString(R.string.lbl_status_text_1_empty));
 			((TextView) findViewById(R.id.txt_status_line_2))
-					.setText("Words in dictionary: none");
+					.setText(getString(R.string.lbl_status_text_2_empty));
 		} else {
 			cursor.moveToFirst();
 			((TextView) findViewById(R.id.txt_status_line_1))
-					.setText("Current dictionary: "
+					.setText(getString(R.string.lbl_status_text_1)
 							+ cursor.getString(DictionaryQuery.DICTIONARY_TITLE));
 			((TextView) findViewById(R.id.txt_status_line_2))
-					.setText("Words in dictionary: "
+					.setText(getString(R.string.lbl_status_text_2)
 							+ cursor.getString(DictionaryQuery.DICTIONARY_WORDS_COUNT));
 		}
 	}

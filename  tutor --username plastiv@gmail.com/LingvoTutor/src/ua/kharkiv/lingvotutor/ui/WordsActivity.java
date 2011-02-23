@@ -45,11 +45,14 @@ public class WordsActivity extends ListActivity {
 					DictionaryContract.Words.buildSearchUri(query),
 					WordsQuery.PROJECTION, WordsQuery.DEFAULT_SELECTION,
 					new String[] { query }, Words.DEFAULT_SORT);
+
+			((TextView) findViewById(R.id.title_text))
+					.setText(getString(R.string.lbl_search_results) + "\""
+							+ query + "\"");
 		} else
 			throw new UnsupportedOperationException("Unknown Intent.Action");
 
 		if (cursor != null) {
-			// FIXME Display the number of results
 			CursorAdapter mAdapter = new WordsAdapter(this);
 			setListAdapter(mAdapter);
 			startManagingCursor(cursor);

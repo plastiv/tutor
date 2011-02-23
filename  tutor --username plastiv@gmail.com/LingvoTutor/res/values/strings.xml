@@ -36,18 +36,19 @@
     <string name="dlg_lbl_deleting">Deleting... Please wait.</string> 
     <string name="dlg_lbl_loading">Loading... Please wait.</string> 
     
+    <string name="lbl_status_text_1">Current dictionary: </string>
+    <string name="lbl_status_text_2">Words in dictionary: </string>
+    <string name="lbl_status_text_1_empty">Current dictionary is empty</string>
+    <string name="lbl_status_text_2_empty">No words in dictionary</string>
+    
+    <string name="lbl_search_results">Search results for</string>
+    
+    <string name="toast_not_implemented">Not implemented yet =)</string>
+    <string name="toast_open_dictionary_first">Open dictionary first</string>
  
 	<string name="search_label">Lingvo Tutor</string>
 	<string name="search_hint">Search the dictionary</string>
 	<!-- The description that will show up in the search settings for this source. -->
 	<string name="settings_description">Definitions of words</string>
-	
-	<string name="html_word_desc">
-		&lt;h1>%1$s&lt;/h1>
-		&lt;i>%2$s&lt;/i>
-		&lt;p>%3$s&lt;/p>
-		&lt;p>
-		&lt;small>&lt;i>%4$s&lt;/i>&lt;/small>
-		&lt;/p>
-	</string>
+
 </resources>
