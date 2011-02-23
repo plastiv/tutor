@@ -19,10 +19,13 @@ import android.widget.Toast;
  */
 public class HomeActivity extends Activity {
 
+	private boolean isDictionaryOpen = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+		
 		((TextView) findViewById(R.id.title_text)).setText(getTitle());
 		setStatusText();
 	}
@@ -34,7 +37,10 @@ public class HomeActivity extends Activity {
 
 	/** Handle "exercise" button action. */
 	public void onExerciseClick(View v) {
-		startActivity(new Intent(this, ExerciseActivity.class));
+		if (isDictionaryOpen)
+			startActivity(new Intent(this, ExerciseActivity.class));
+		else
+			showToast(getString(R.string.toast_open_dictionary_first));
 	}
 
 	/** Handle "exercise2" button action. */
@@ -59,14 +65,16 @@ public class HomeActivity extends Activity {
 
 	/** Handle "words" button action. */
 	public void onWordsClick(View v) {
-		startActivity(new Intent(Intent.ACTION_VIEW, Words.CONTENT_URI));
+		if (isDictionaryOpen)
+			startActivity(new Intent(Intent.ACTION_VIEW, Words.CONTENT_URI));
+		else
+			showToast(getString(R.string.toast_open_dictionary_first));
 	}
 
 	private void showToast(String message) {
-
-		Toast newToast = Toast.makeText(getApplicationContext(), message,
+		Toast toast = Toast.makeText(getApplicationContext(), message,
 				Toast.LENGTH_SHORT);
-		newToast.show();
+		toast.show();
 	}
 
 	private void setStatusText() {
@@ -79,7 +87,9 @@ public class HomeActivity extends Activity {
 			((TextView) findViewById(R.id.txt_status_line_2))
 					.setText(getString(R.string.lbl_status_text_2_empty));
 		} else {
+			isDictionaryOpen = true;
 			cursor.moveToFirst();
+
 			((TextView) findViewById(R.id.txt_status_line_1))
 					.setText(getString(R.string.lbl_status_text_1)
 							+ cursor.getString(DictionaryQuery.DICTIONARY_TITLE));

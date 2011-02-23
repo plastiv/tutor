@@ -1,9 +1,7 @@
 package ua.kharkiv.lingvotutor.ui;
 
-import java.io.IOException;
-
 import ua.kharkiv.lingvotutor.R;
-import ua.kharkiv.lingvotutor.io.Downloader;
+import ua.kharkiv.lingvotutor.io.DownloadTask;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Dictionary;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Words;
 import ua.kharkiv.lingvotutor.utils.UIUtils;
@@ -72,7 +70,7 @@ public class DictionaryActivity extends ListActivity {
 		UIUtils.goSearch(this);
 	}
 
-	private void showDictionaryList(Uri dictionaryUri) {
+	public void showDictionaryList(Uri dictionaryUri) {
 		Cursor cursor = managedQuery(dictionaryUri, DictionaryQuery.PROJECTION,
 				null, null, Dictionary.DEFAULT_SORT);
 
@@ -112,7 +110,7 @@ public class DictionaryActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.dictionary_menu_example:
-			new DownloadTask(R.id.dictionary_menu_example).execute("unused");
+			new DownloadTask(this, R.id.dictionary_menu_example).execute("unused");
 			return true;
 		case R.id.dictionary_menu_file:
 			showOpenDialog(R.id.dictionary_menu_file);
@@ -158,11 +156,11 @@ public class DictionaryActivity extends ListActivity {
 							public void onClick(DialogInterface dialog, int id) {
 								switch (dialogId) {
 								case R.id.dictionary_menu_url:
-									new DownloadTask(R.id.dictionary_menu_url)
+									new DownloadTask(DictionaryActivity.this, R.id.dictionary_menu_url)
 											.execute(input.getText().toString());
 									break;
 								case R.id.dictionary_menu_file:
-									new DownloadTask(R.id.dictionary_menu_file)
+									new DownloadTask(DictionaryActivity.this, R.id.dictionary_menu_file)
 											.execute(input.getText().toString());
 									break;
 								}
@@ -196,43 +194,6 @@ public class DictionaryActivity extends ListActivity {
 			((TextView) view.findViewById(R.id.list_item_dictionary_count))
 					.setText("Words count: "
 							+ cursor.getString(DictionaryQuery.DICTIONARY_WORDS_COUNT));
-		}
-	}
-
-	private class DownloadTask extends AsyncTask<String, Integer, Long> {
-		private int taskId;
-
-		public DownloadTask(int id) {
-			taskId = id;
-		}
-
-		protected void onPreExecute() {
-			showDialog(taskId);
-		}
-
-		protected Long doInBackground(String... params) {
-			try {
-				switch (taskId) {
-				case R.id.dictionary_menu_url:
-					new Downloader(getContentResolver()).fromUrl(params[0]);
-					break;
-				case R.id.dictionary_menu_file:
-					new Downloader(getContentResolver()).fromFile(params[0]);
-					break;
-				case R.id.dictionary_menu_example:
-					new Downloader(getContentResolver())
-							.fromResourse(getResources());
-					break;
-				}
-			} catch (IOException e) {
-				Log.e(TAG, "DownloadTask.doInBackground(): IOExeption", e);
-			}
-			return null;
-		}
-
-		protected void onPostExecute(Long result) {
-			showDictionaryList(Dictionary.CONTENT_URI);
-			dismissDialog(taskId);
 		}
 	}
 

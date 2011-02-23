@@ -11,7 +11,6 @@
     <string name="title_exercise">Exercise</string>
     
     <string name="empty_dictionary">No dictionary is here. You could download some from menu.</string>
-    <string name="empty_words">No words are here. You could download some from dictionary menu.</string>
     
     <string name="home_btn_dictionary">Dictionary</string>
     <string name="home_btn_exercise">Exercise</string>
@@ -40,7 +39,7 @@
     <string name="lbl_status_text_2">Words in dictionary: </string>
     <string name="lbl_status_text_1_empty">Current dictionary is empty</string>
     <string name="lbl_status_text_2_empty">No words in dictionary</string>
-    
+    <string name="lbl_words_list_emplty">No words are here. You could download some from dictionary menu.</string>
     <string name="lbl_search_results">Search results for</string>
     
     <string name="toast_not_implemented">Not implemented yet =)</string>

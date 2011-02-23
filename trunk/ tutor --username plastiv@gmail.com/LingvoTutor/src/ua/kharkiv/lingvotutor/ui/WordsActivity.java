@@ -3,6 +3,8 @@ package ua.kharkiv.lingvotutor.ui;
 import ua.kharkiv.lingvotutor.R;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Words;
+import ua.kharkiv.lingvotutor.utils.NotifyingAsyncQueryHandler;
+import ua.kharkiv.lingvotutor.utils.NotifyingAsyncQueryHandler.AsyncQueryListener;
 import ua.kharkiv.lingvotutor.utils.UIUtils;
 import android.app.ListActivity;
 import android.app.SearchManager;
@@ -14,50 +16,71 @@ import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class WordsActivity extends ListActivity {
+public class WordsActivity extends ListActivity implements AsyncQueryListener {
+
+	private NotifyingAsyncQueryHandler mHandler;
+	private WordsAdapter mAdapter;
+	private ProgressBar mTitleProgressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// Request for the progress bar to be shown in the title
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_words);
 
 		((TextView) findViewById(R.id.title_text)).setText(getTitle());
+		mTitleProgressBar = (ProgressBar) findViewById(R.id.title_progress_bar);
+		// show the progress circle
+		mTitleProgressBar.setVisibility(View.VISIBLE);
+
+		mAdapter = new WordsAdapter(this);
+		setListAdapter(mAdapter);
 
 		Intent intent = getIntent();
-		Cursor cursor;
 
 		if (Intent.ACTION_VIEW.equals(intent.getAction())) {
 			final Uri wordsUri = getIntent().getData();
 
-			cursor = managedQuery(wordsUri, WordsQuery.PROJECTION,
-					WordsQuery.DEFAULT_SELECTION, null, Words.DEFAULT_SORT);
+			// Start background query to load tracks
+			mHandler = new NotifyingAsyncQueryHandler(getContentResolver(),
+					this);
+			mHandler.startQuery(wordsUri, WordsQuery.PROJECTION,
+					Words.DEFAULT_SORT);
 
 		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 
 			// handles a search query
 			String query = intent.getStringExtra(SearchManager.QUERY);
 
-			cursor = managedQuery(
-					DictionaryContract.Words.buildSearchUri(query),
-					WordsQuery.PROJECTION, WordsQuery.DEFAULT_SELECTION,
-					new String[] { query }, Words.DEFAULT_SORT);
-
 			((TextView) findViewById(R.id.title_text))
 					.setText(getString(R.string.lbl_search_results) + "\""
 							+ query + "\"");
+
+			// Start background query to load tracks
+			mHandler = new NotifyingAsyncQueryHandler(getContentResolver(),
+					this);
+			mHandler.startQuery(DictionaryContract.Words.buildSearchUri(query),
+					WordsQuery.PROJECTION, WordsQuery.DEFAULT_SELECTION,
+					new String[] { query }, Words.DEFAULT_SORT);
+
 		} else
 			throw new UnsupportedOperationException("Unknown Intent.Action");
+	}
 
-		if (cursor != null) {
-			CursorAdapter mAdapter = new WordsAdapter(this);
-			setListAdapter(mAdapter);
-			startManagingCursor(cursor);
-			mAdapter.changeCursor(cursor);
-		}
+	/** {@inheritDoc} */
+	public void onQueryComplete(int token, Object cookie, Cursor cursor) {
+		// hide the progress circle
+		mTitleProgressBar.setVisibility(View.INVISIBLE);
+
+		startManagingCursor(cursor);
+		mAdapter.changeCursor(cursor);
 	}
 
 	/** {@inheritDoc} */

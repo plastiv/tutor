@@ -1,7 +1,6 @@
-
 package ua.kharkiv.lingvotutor.provider;
+
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Dictionary;
-import ua.kharkiv.lingvotutor.provider.DictionaryContract.DictionaryColumns;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.SearchSuggest;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Words;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.WordsColumns;
@@ -28,7 +27,7 @@ public class DictionaryProvider extends ContentProvider {
 	private static final int WORDS = 100;
 	private static final int WORDS_ID = 101;
 	private static final int WORDS_SEARCH = 102;
-	
+
 	private static final int DICTIONARY = 200;
 	private static final int DICTIONARY_ID = 201;
 
@@ -50,7 +49,7 @@ public class DictionaryProvider extends ContentProvider {
 		matcher.addURI(authority, "words/#", WORDS_ID);
 		matcher.addURI(authority, "words/search/*", WORDS_SEARCH);
 		matcher.addURI(authority, "words/search", WORDS_SEARCH);
-		
+
 		matcher.addURI(authority, "dictionary", DICTIONARY);
 		matcher.addURI(authority, "dictionary/#", DICTIONARY_ID);
 
@@ -113,8 +112,10 @@ public class DictionaryProvider extends ContentProvider {
 			return ContentUris.withAppendedId(Words.CONTENT_URI, wordId);
 		}
 		case DICTIONARY: {
-			final long dictionaryId = db.insertOrThrow(Tables.DICTIONARY, null, values);
-			return ContentUris.withAppendedId(Dictionary.CONTENT_URI, dictionaryId);
+			final long dictionaryId = db.insertOrThrow(Tables.DICTIONARY, null,
+					values);
+			return ContentUris.withAppendedId(Dictionary.CONTENT_URI,
+					dictionaryId);
 		}
 		default: {
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -146,27 +147,17 @@ public class DictionaryProvider extends ContentProvider {
 		switch (match) {
 		case WORDS: {
 			builder.table(Tables.WORDS);
-			builder.map(WordsColumns.WORD_NAME, WordsColumns.WORD_NAME);
-			builder.map(WordsColumns.WORD_TRANSLATION,
-					WordsColumns.WORD_TRANSLATION);
-			builder.map(WordsColumns.WORD_TRANSCRIPTION,
-					WordsColumns.WORD_TRANSCRIPTION);
-			builder.map(WordsColumns.WORD_EXAMPLE, WordsColumns.WORD_EXAMPLE);
 			builder.map(BaseColumns._ID, "rowid");
 
-			return builder.query(db, projection, sortOrder);
+			if (sortOrder == null)
+				return builder.query(db, projection, Words.DEFAULT_SORT);
+			else
+				return builder.query(db, projection, sortOrder);
 		}
 		case WORDS_SEARCH: {
-
 			builder.table(Tables.WORDS);
 			selectionArgs[0] = selectionArgs[0] + "*";
 			builder.where(selection, selectionArgs);
-			builder.map(WordsColumns.WORD_NAME, WordsColumns.WORD_NAME);
-			builder.map(WordsColumns.WORD_TRANSLATION,
-					WordsColumns.WORD_TRANSLATION);
-			builder.map(WordsColumns.WORD_TRANSCRIPTION,
-					WordsColumns.WORD_TRANSCRIPTION);
-			builder.map(WordsColumns.WORD_EXAMPLE, WordsColumns.WORD_EXAMPLE);
 			builder.map(BaseColumns._ID, "rowid");
 
 			return builder.query(db, projection, sortOrder);
@@ -175,21 +166,12 @@ public class DictionaryProvider extends ContentProvider {
 			final String wordId = Words.getWordId(uri);
 			builder.table(Tables.WORDS);
 			builder.where(BaseColumns._ID + "=?", wordId);
-			builder.map(WordsColumns.WORD_NAME, WordsColumns.WORD_NAME);
-			builder.map(WordsColumns.WORD_TRANSLATION,
-					WordsColumns.WORD_TRANSLATION);
-			builder.map(WordsColumns.WORD_TRANSCRIPTION,
-					WordsColumns.WORD_TRANSCRIPTION);
-			builder.map(WordsColumns.WORD_EXAMPLE, WordsColumns.WORD_EXAMPLE);
 			builder.map(BaseColumns._ID, "rowid");
 
 			return builder.query(db, projection, sortOrder);
 		}
 		case DICTIONARY: {
 			builder.table(Tables.DICTIONARY);
-			builder.map(DictionaryColumns.DICTIONARY_TITLE, DictionaryColumns.DICTIONARY_TITLE);
-			builder.map(DictionaryColumns.DICTIONARY_WORDS_COUNT,
-					DictionaryColumns.DICTIONARY_WORDS_COUNT);
 			builder.map(BaseColumns._ID, "rowid");
 
 			return builder.query(db, projection, sortOrder);
@@ -197,21 +179,26 @@ public class DictionaryProvider extends ContentProvider {
 		case SEARCH_SUGGEST: {
 			// Adjust incoming query to become SQL text match
 			builder.table(Tables.WORDS);
+			
 			String selectionSearchSuggest = WordsColumns.WORD_NAME + " MATCH ?";
 			selectionArgs[0] = selectionArgs[0] + "*";
 			builder.where(selectionSearchSuggest, selectionArgs);
-			builder.map(WordsColumns.WORD_NAME, WordsColumns.WORD_NAME);
-			builder.map(WordsColumns.WORD_TRANSLATION,
+			
+			builder.map(SearchManager.SUGGEST_COLUMN_TEXT_1,
+					WordsColumns.WORD_NAME);
+			builder.map(SearchManager.SUGGEST_COLUMN_TEXT_2,
 					WordsColumns.WORD_TRANSLATION);
 			builder.map(BaseColumns._ID, "rowid");
 			builder.map(SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID, "rowid");
 
 			projection = new String[] { BaseColumns._ID,
-					WordsColumns.WORD_NAME, WordsColumns.WORD_TRANSLATION,
+					SearchManager.SUGGEST_COLUMN_TEXT_1,
+					SearchManager.SUGGEST_COLUMN_TEXT_2,
 					SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID };
 
 			final String limit = uri
 					.getQueryParameter(SearchManager.SUGGEST_PARAMETER_LIMIT);
+
 			return builder.query(db, projection, null, null,
 					SearchSuggest.DEFAULT_SORT, limit);
 		}
