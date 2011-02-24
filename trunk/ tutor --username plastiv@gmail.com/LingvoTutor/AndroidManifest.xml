@@ -10,7 +10,7 @@
 		android:targetSdkVersion="7" />
 
 	<uses-permission
-		android:name="android.permission.INTERNET" />
+		android:name="android.permission.INTERNET"/>
 
 	<application
 		android:icon="@drawable/ic_launcher"
@@ -94,6 +94,12 @@
 				<data
 					android:mimeType="vnd.android.cursor.item/vnd.lingvotutor.words" />
 			</intent-filter>
+		</activity>
+		
+		<activity
+			android:name=".ui.FileOpenActivity"
+			android:theme="@style/Theme.Lingvo"
+			android:label="@string/title_fileOpen">
 		</activity>
 
 		<!-- Points to searchable activity so the whole app can invoke search. -->
