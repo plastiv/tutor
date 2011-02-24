@@ -105,7 +105,18 @@ public class ExerciseActivity extends Activity {
 
 	private void check() {
 		String input = mTranslation.getText().toString();
-		if (mCorrect.contains(input)) {
+		// Split by all non words character
+		String[] splitStr = mCorrect.split("\\W");
+		boolean contain = false;
+
+		for (String i : splitStr) {
+			if (i.equals(input)) {
+				contain = true;
+				break;
+			}
+		}
+
+		if (contain) {
 			showToast(mCorrect);
 			newTask();
 		} else {
