@@ -4,14 +4,13 @@ import ua.kharkiv.lingvotutor.R;
 import ua.kharkiv.lingvotutor.io.DownloadTask;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Dictionary;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Words;
+import ua.kharkiv.lingvotutor.utils.DialogHelper;
 import ua.kharkiv.lingvotutor.utils.UIUtils;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,13 +24,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class DictionaryActivity extends ListActivity {
 
 	private static final String TAG = "WordsActivity";
+	private static final int PICK_FILE_OPEN = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,13 +109,15 @@ public class DictionaryActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.dictionary_menu_example:
-			new DownloadTask(this, R.id.dictionary_menu_example).execute("unused");
+			new DownloadTask(this, R.id.dictionary_menu_example)
+					.execute("unused");
 			return true;
 		case R.id.dictionary_menu_file:
-			showOpenDialog(R.id.dictionary_menu_file);
+			startActivityForResult(new Intent(this, FileOpenActivity.class),
+					PICK_FILE_OPEN);
 			return true;
 		case R.id.dictionary_menu_url:
-			showOpenDialog(R.id.dictionary_menu_url);
+			DialogHelper.getUrlOpenDialog(this);
 			return true;
 		case R.id.dictionary_menu_delete:
 			new EraseDataTask().execute((Void) null);
@@ -126,49 +127,22 @@ public class DictionaryActivity extends ListActivity {
 		}
 	}
 
-	private void showOpenDialog(final int dialogId) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		final EditText input = new EditText(this);
-		// FIXME hardlink to url
-		switch (dialogId) {
-		case R.id.dictionary_menu_url:
-			input.setText("http://dl.dropbox.com/u/13226125/To%20kill%20a%20mockbird%28En-Ru%29.xml");
-			builder.setMessage(R.string.dlg_lbl_url);
-			break;
-		case R.id.dictionary_menu_file:
-			input.setText("sdcard/test.xml");
-			builder.setMessage(R.string.dlg_lbl_file);
-			break;
-		}
-
-		input.selectAll();
-
-		builder.setCancelable(false)
-				.setView(input)
-				.setNegativeButton(getString(R.string.dlg_btn_cancel),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						})
-				.setPositiveButton(getString(R.string.dlg_btn_ok),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								switch (dialogId) {
-								case R.id.dictionary_menu_url:
-									new DownloadTask(DictionaryActivity.this, R.id.dictionary_menu_url)
-											.execute(input.getText().toString());
-									break;
-								case R.id.dictionary_menu_file:
-									new DownloadTask(DictionaryActivity.this, R.id.dictionary_menu_file)
-											.execute(input.getText().toString());
-									break;
-								}
-							}
-						});
-
-		AlertDialog alert = builder.create();
-		alert.show();
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == PICK_FILE_OPEN) {
+			if (resultCode == RESULT_OK) {
+				// A contact was picked. Here we will just display it
+				// to the user.
+				String filename = data
+						.getStringExtra(FileOpenActivity.RESULT_PATH);
+				new DownloadTask(this, R.id.dictionary_menu_file)
+						.execute(filename);
+			}
+			else
+				throw new UnsupportedOperationException(
+						"onActivityResult has incorrect code");
+		} else
+			throw new UnsupportedOperationException(
+					"onActivityResult has incorrect code");
 	}
 
 	/**

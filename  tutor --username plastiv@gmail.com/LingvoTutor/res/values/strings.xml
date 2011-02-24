@@ -9,6 +9,7 @@
     <string name="title_words_detail">Word Detail</string>
     <string name="title_dictionary">Dictionary</string>
     <string name="title_exercise">Exercise</string>
+    <string name="title_fileOpen">FileOpenDialog</string>
     
     <string name="empty_dictionary">No dictionary is here. You could download some from menu.</string>
     
@@ -34,9 +35,11 @@
     <string name="dlg_lbl_url">Enter download url here</string> 
     <string name="dlg_lbl_deleting">Deleting... Please wait.</string> 
     <string name="dlg_lbl_loading">Loading... Please wait.</string> 
+    <string name="dlg_lbl_fileOpen">Do you want to open that file?\n</string> 
     
-    <string name="lbl_status_text_1">Current dictionary: </string>
-    <string name="lbl_status_text_2">Words in dictionary: </string>
+    <!-- symbol " in string means space   -->
+    <string name="lbl_status_text_1">Current dictionary: "</string>
+    <string name="lbl_status_text_2">Words in dictionary: "</string>
     <string name="lbl_status_text_1_empty">Current dictionary is empty</string>
     <string name="lbl_status_text_2_empty">No words in dictionary</string>
     <string name="lbl_words_list_emplty">No words are here. You could download some from dictionary menu.</string>
@@ -49,5 +52,7 @@
 	<string name="search_hint">Search the dictionary</string>
 	<!-- The description that will show up in the search settings for this source. -->
 	<string name="settings_description">Definitions of words</string>
+	
+	<string name="filename_up_on_one_level">..</string>
 
 </resources>

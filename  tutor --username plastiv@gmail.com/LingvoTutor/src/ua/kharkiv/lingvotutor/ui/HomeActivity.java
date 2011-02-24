@@ -41,11 +41,12 @@ public class HomeActivity extends Activity {
 			startActivity(new Intent(this, ExerciseActivity.class));
 		else
 			showToast(getString(R.string.toast_open_dictionary_first));
+		
 	}
-
+	
 	/** Handle "exercise2" button action. */
 	public void onExercise_2Click(View v) {
-		showToast(getString(R.string.toast_not_implemented));
+		showToast(getString(R.string.toast_not_implemented));		
 	}
 
 	/** Handle "settings" button action. */
@@ -78,6 +79,7 @@ public class HomeActivity extends Activity {
 	}
 
 	private void setStatusText() {
+		// FIXME Real count -1
 		Cursor cursor = managedQuery(Dictionary.CONTENT_URI,
 				DictionaryQuery.PROJECTION, null, null, Dictionary.DEFAULT_SORT);
 

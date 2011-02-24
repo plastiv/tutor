@@ -9,6 +9,7 @@
     <string name="title_words_detail">Карточка слова</string>
     <string name="title_dictionary">Словарь</string>
     <string name="title_exercise">Упражнение</string>
+    <string name="title_fileOpen">Открыть файл</string>
     
     <string name="empty_dictionary">Открытых словарей нет. Воспользуйтесь меню.</string>
     
@@ -34,6 +35,7 @@
     <string name="dlg_lbl_url">Открыть ссылку:</string> 
     <string name="dlg_lbl_deleting">Удаление...</string> 
     <string name="dlg_lbl_loading">Загрузка...</string> 
+    <string name="dlg_lbl_fileOpen">Открыть этот файл?\n</string> 
     
 	<!-- symbol " in string means space   -->
  	<string name="lbl_status_text_1">Открыт словарь: "</string>
@@ -51,4 +53,5 @@
 	<!-- The description that will show up in the search settings for this source. -->
 	<string name="settings_description">Определения слов</string>
 	
+	<string name="filename_up_on_one_level">..</string>
 </resources>
