@@ -24,13 +24,11 @@ public class FileOpenActivity extends ListActivity {
 	// TODO Put startDirectory to settings for future open
 
 	// TODO Log Activity private static final String TAG = "FileOpenActivity";
-	private static final String FTYPE = ".xml";
+	private static final String FTYPE_XML = ".xml";
+	private static final String FTYPE_ZIP = ".zip";
 
 	private List<String> directoryEntries = new ArrayList<String>();
 	private File currentDirectory = Environment.getExternalStorageDirectory();
-
-	boolean mExternalStorageAvailable = false;
-	boolean mExternalStorageWriteable = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +38,6 @@ public class FileOpenActivity extends ListActivity {
 		((TextView) findViewById(R.id.title_text)).setText(getTitle());
 
 		browseToRoot();
-		updateExternalStorageState(); // TODO check SD Card availability
 	}
 
 	/** Handle "home" title-bar action. */
@@ -53,22 +50,14 @@ public class FileOpenActivity extends ListActivity {
 		UIUtils.goSearch(this);
 	}
 
-	private void updateExternalStorageState() {
+	public static boolean isExternalStorageAvailible() {
 		String state = Environment.getExternalStorageState();
+		return Environment.MEDIA_MOUNTED.equals(state);
+	}
 
-		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			// We can read and write the media
-			mExternalStorageAvailable = mExternalStorageWriteable = true;
-		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-			// We can only read the media
-			mExternalStorageAvailable = true;
-			mExternalStorageWriteable = false;
-		} else {
-			// Something else is wrong. It may be one of many other states, but
-			// all we need
-			// to know is we can neither read nor write
-			mExternalStorageAvailable = mExternalStorageWriteable = false;
-		}
+	public static boolean isExternalStorageReadOnly() {
+		String state = Environment.getExternalStorageState();
+		return Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
 	}
 
 	/**
@@ -140,7 +129,8 @@ public class FileOpenActivity extends ListActivity {
 
 		for (File currentFile : files) {
 			if (currentFile.isDirectory()
-					|| currentFile.getName().contains(FTYPE))
+					|| currentFile.getName().contains(FTYPE_XML)
+					|| currentFile.getName().contains(FTYPE_ZIP))
 				this.directoryEntries.add(currentFile.getAbsolutePath()
 						.substring(currentPathStringLenght));
 		}

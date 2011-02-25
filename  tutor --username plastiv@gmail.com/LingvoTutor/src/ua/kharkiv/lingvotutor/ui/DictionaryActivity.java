@@ -14,6 +14,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.view.Menu;
@@ -26,6 +28,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DictionaryActivity extends ListActivity implements
 		AsyncQueryListener {
@@ -131,11 +134,18 @@ public class DictionaryActivity extends ListActivity implements
 					.execute("unused");
 			return true;
 		case R.id.dictionary_menu_file:
-			startActivityForResult(new Intent(this, FileOpenActivity.class),
-					PICK_FILE_OPEN);
+			if (FileOpenActivity.isExternalStorageAvailible())
+				startActivityForResult(
+						new Intent(this, FileOpenActivity.class),
+						PICK_FILE_OPEN);
+			else
+				showToast(getString(R.string.toast_sdcard_not_available));
 			return true;
 		case R.id.dictionary_menu_url:
-			DialogHelper.getUrlOpenDialog(this);
+			if (isInternetAvailable())
+				DialogHelper.getUrlOpenDialog(this).show();
+			else
+				showToast(getString(R.string.toast_no_connection));
 			return true;
 		case R.id.dictionary_menu_delete:
 			deleteDictionary();
@@ -162,6 +172,11 @@ public class DictionaryActivity extends ListActivity implements
 					"onActivityRequest has incorrect code");
 	}
 
+	public void updateDictionaryList() {
+		// Start background query to load dictionary
+		mHandler.startQuery(Dictionary.CONTENT_URI, DictionaryQuery.PROJECTION);
+	}
+
 	private void deleteDictionary() {
 		mTitleProgressBar.setVisibility(View.VISIBLE);
 		mHandler.startDelete(Words.CONTENT_URI);
@@ -170,9 +185,21 @@ public class DictionaryActivity extends ListActivity implements
 		mHandler.startDelete(Dictionary.CONTENT_URI);
 	}
 
-	public void updateDictionaryList() {
-		// Start background query to load dictionary
-		mHandler.startQuery(Dictionary.CONTENT_URI, DictionaryQuery.PROJECTION);
+	private void showToast(String message) {
+		Toast toast = Toast.makeText(getApplicationContext(), message,
+				Toast.LENGTH_SHORT);
+		toast.show();
+	}
+
+	private boolean isInternetAvailable() {
+
+		ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		NetworkInfo mWifi = connManager
+				.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		NetworkInfo mMobile = connManager
+				.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+		return mWifi.isAvailable() || mMobile.isAvailable();
 	}
 
 	/**

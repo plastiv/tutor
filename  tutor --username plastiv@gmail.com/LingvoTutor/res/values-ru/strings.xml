@@ -29,8 +29,10 @@
     <string name="menu_dictionary_example">Из примера</string>
     <string name="menu_dictionary_delete">Удалить текущий</string>    
     
-    <string name="dlg_btn_cancel">Отмена</string> 
+    <string name="dlg_btn_cancel">Отменить</string> 
     <string name="dlg_btn_ok">Ok</string>     
+    <string name="dlg_btn_load">Загрузить</string>   
+    <string name="dlg_btn_search">Искать</string>
     <string name="dlg_lbl_file">Открыть файл:</string> 
     <string name="dlg_lbl_url">Открыть ссылку:</string> 
     <string name="dlg_lbl_deleting">Удаление...</string> 
@@ -47,6 +49,8 @@
     
     <string name="toast_not_implemented">Еще не сделано =)</string>
     <string name="toast_open_dictionary_first">Сначала откройте словарь</string>
+    <string name="toast_sdcard_not_available">Карта памяти не доступна</string>
+    <string name="toast_no_connection">Нет интернет соединения</string>
     
 	<string name="search_label">Lingvo Tutor</string>
 	<string name="search_hint">Поиск по словарю</string>
