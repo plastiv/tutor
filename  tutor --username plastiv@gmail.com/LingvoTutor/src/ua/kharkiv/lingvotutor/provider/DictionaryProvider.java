@@ -67,17 +67,23 @@ public class DictionaryProvider extends ContentProvider {
 		switch (sUriMatcher.match(uri)) {
 		case WORDS: {
 			builder.table(Tables.WORDS);
-			builder.where(selection, selectionArgs);
+			if (selection == null)
+				builder.where("1", (String[]) null);
+			else
+				builder.where(selection, selectionArgs);
 			return builder.delete(db);
 		}
 		case DICTIONARY: {
+			// FIXME add trigger, that delete all words, when i delete dictionary
 			builder.table(Tables.DICTIONARY);
-			builder.where(selection, selectionArgs);
+			if (selection == null)
+				builder.where("1", (String[]) null);
+			else
+				builder.where(selection, selectionArgs);
 			return builder.delete(db);
 		}
-		default: {
+		default:
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
-		}
 		}
 	}
 
@@ -173,17 +179,19 @@ public class DictionaryProvider extends ContentProvider {
 		case DICTIONARY: {
 			builder.table(Tables.DICTIONARY);
 			builder.map(BaseColumns._ID, "rowid");
-
-			return builder.query(db, projection, sortOrder);
+			if (sortOrder == null)
+				return builder.query(db, projection, Dictionary.DEFAULT_SORT);
+			else
+				return builder.query(db, projection, sortOrder);
 		}
 		case SEARCH_SUGGEST: {
 			// Adjust incoming query to become SQL text match
 			builder.table(Tables.WORDS);
-			
+
 			String selectionSearchSuggest = WordsColumns.WORD_NAME + " MATCH ?";
 			selectionArgs[0] = selectionArgs[0] + "*";
 			builder.where(selectionSearchSuggest, selectionArgs);
-			
+
 			builder.map(SearchManager.SUGGEST_COLUMN_TEXT_1,
 					WordsColumns.WORD_NAME);
 			builder.map(SearchManager.SUGGEST_COLUMN_TEXT_2,
