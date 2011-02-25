@@ -30,7 +30,9 @@
     <string name="menu_dictionary_delete">Delete Current</string>    
     
     <string name="dlg_btn_cancel">Cancel</string> 
-    <string name="dlg_btn_ok">Ok</string>     
+    <string name="dlg_btn_ok">Ok</string>  
+    <string name="dlg_btn_load">Load</string>   
+    <string name="dlg_btn_search">Search</string>
     <string name="dlg_lbl_file">Enter download filename here</string> 
     <string name="dlg_lbl_url">Enter download url here</string> 
     <string name="dlg_lbl_deleting">Deleting... Please wait.</string> 
@@ -47,6 +49,8 @@
     
     <string name="toast_not_implemented">Not implemented yet =)</string>
     <string name="toast_open_dictionary_first">Open dictionary first</string>
+    <string name="toast_sdcard_not_available">SDCard is not available</string>
+    <string name="toast_no_connection">No internet connection</string>
  
 	<string name="search_label">Lingvo Tutor</string>
 	<string name="search_hint">Search the dictionary</string>

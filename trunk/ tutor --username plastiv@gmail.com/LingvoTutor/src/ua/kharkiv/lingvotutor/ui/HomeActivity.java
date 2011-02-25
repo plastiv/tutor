@@ -25,7 +25,7 @@ public class HomeActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
-		
+
 		((TextView) findViewById(R.id.title_text)).setText(getTitle());
 		setStatusText();
 	}
@@ -41,12 +41,12 @@ public class HomeActivity extends Activity {
 			startActivity(new Intent(this, ExerciseActivity.class));
 		else
 			showToast(getString(R.string.toast_open_dictionary_first));
-		
+
 	}
-	
+
 	/** Handle "exercise2" button action. */
 	public void onExercise_2Click(View v) {
-		showToast(getString(R.string.toast_not_implemented));		
+		showToast(getString(R.string.toast_not_implemented));
 	}
 
 	/** Handle "settings" button action. */

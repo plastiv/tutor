@@ -40,6 +40,8 @@ public class DownloadTask extends AsyncTask<String, Integer, Long> {
 			}
 		} catch (IOException e) {
 			Log.e(TAG, ".doInBackground(): IOExeption", e);
+		}catch (UnsupportedOperationException e){
+			Log.e(TAG, ".doInBackground(): UnsupportedOperationException", e);
 		}
 		return null;
 	}

@@ -89,6 +89,7 @@ public class ExerciseActivity extends Activity {
 	}
 
 	public void onBtnTipClick(View v) {
+		// TODO Magic number
 		mTranslation.setTextKeepState(mCorrect.substring(0, 3));
 		mTranslation.setSelection(3);
 	}
