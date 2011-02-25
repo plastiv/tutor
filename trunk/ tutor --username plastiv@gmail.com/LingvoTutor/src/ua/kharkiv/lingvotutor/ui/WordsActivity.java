@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 public class WordsActivity extends ListActivity implements AsyncQueryListener {
 
+	// FIXME Made include layout for top header (button with title)
 	private NotifyingAsyncQueryHandler mHandler;
 	private WordsAdapter mAdapter;
 	private ProgressBar mTitleProgressBar;
@@ -51,8 +52,7 @@ public class WordsActivity extends ListActivity implements AsyncQueryListener {
 			// Start background query to load tracks
 			mHandler = new NotifyingAsyncQueryHandler(getContentResolver(),
 					this);
-			mHandler.startQuery(wordsUri, WordsQuery.PROJECTION,
-					Words.DEFAULT_SORT);
+			mHandler.startQuery(wordsUri, WordsQuery.PROJECTION);
 
 		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 
@@ -139,5 +139,10 @@ public class WordsActivity extends ListActivity implements AsyncQueryListener {
 
 		int WORD_NAME = 1;
 		int WORD_TRANSLATION = 2;
+	}
+
+	@Override
+	public void onDeleteComplete(int token, Object cookie, int result) {
+		// TODO Auto-generated method stub		
 	}
 }

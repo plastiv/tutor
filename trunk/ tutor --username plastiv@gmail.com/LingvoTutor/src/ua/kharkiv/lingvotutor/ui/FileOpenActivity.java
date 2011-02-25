@@ -19,8 +19,7 @@ import android.widget.TextView;
 
 public class FileOpenActivity extends ListActivity {
 	public static final String RESULT_PATH = "result_path";
-	
-	// FIXME Experiment with permission and content type
+
 	// FIXME check permission for open folder
 	// TODO Put startDirectory to settings for future open
 
@@ -41,7 +40,7 @@ public class FileOpenActivity extends ListActivity {
 		((TextView) findViewById(R.id.title_text)).setText(getTitle());
 
 		browseToRoot();
-		updateExternalStorageState(); // TODO use it
+		updateExternalStorageState(); // TODO check SD Card availability
 	}
 
 	/** Handle "home" title-bar action. */
@@ -122,8 +121,7 @@ public class FileOpenActivity extends ListActivity {
 	}
 
 	private void openFile(File aFile) {
-		getIntent().putExtra(RESULT_PATH,
-				aFile.getAbsolutePath());
+		getIntent().putExtra(RESULT_PATH, aFile.getAbsolutePath());
 		setResult(RESULT_OK, getIntent());
 		finish();
 	}

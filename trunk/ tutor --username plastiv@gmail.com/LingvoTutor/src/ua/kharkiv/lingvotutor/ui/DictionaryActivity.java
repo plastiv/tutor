@@ -5,47 +5,77 @@ import ua.kharkiv.lingvotutor.io.DownloadTask;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Dictionary;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Words;
 import ua.kharkiv.lingvotutor.utils.DialogHelper;
+import ua.kharkiv.lingvotutor.utils.NotifyingAsyncQueryHandler;
+import ua.kharkiv.lingvotutor.utils.NotifyingAsyncQueryHandler.AsyncQueryListener;
 import ua.kharkiv.lingvotutor.utils.UIUtils;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class DictionaryActivity extends ListActivity {
+public class DictionaryActivity extends ListActivity implements
+		AsyncQueryListener {
 
-	private static final String TAG = "WordsActivity";
 	private static final int PICK_FILE_OPEN = 0;
+	private NotifyingAsyncQueryHandler mHandler;
+	private DictionaryAdapter mAdapter;
+	private ProgressBar mTitleProgressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// Request for the progress bar to be shown in the title
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_dictionary);
 
 		((TextView) findViewById(R.id.title_text)).setText(getTitle());
+		mTitleProgressBar = (ProgressBar) findViewById(R.id.title_progress_bar);
+		mTitleProgressBar.setVisibility(View.VISIBLE); // show the progress
+														// circle
+
+		mAdapter = new DictionaryAdapter(this);
+		setListAdapter(mAdapter);
+
+		mHandler = new NotifyingAsyncQueryHandler(getContentResolver(), this);
 
 		Intent intent = getIntent();
 
 		if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-			final Uri dictionaryUri = getIntent().getData();
-			showDictionaryList(dictionaryUri);
+			updateDictionaryList();
 		} else
 			throw new UnsupportedOperationException("Unknown Intent.Action");
+	}
+
+	/** {@inheritDoc} */
+	public void onQueryComplete(int token, Object cookie, Cursor cursor) {
+		// hide the progress circle
+		mTitleProgressBar.setVisibility(View.INVISIBLE);
+
+		startManagingCursor(cursor);
+		mAdapter.changeCursor(cursor);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void onDeleteComplete(int token, Object cookie, int result) {
+		// hide the progress circle
+		mTitleProgressBar.setVisibility(View.INVISIBLE);
+		updateDictionaryList();
+		// FIXME Show how much rows were deleted
 	}
 
 	/** {@inheritDoc} */
@@ -67,18 +97,6 @@ public class DictionaryActivity extends ListActivity {
 	/** Handle "search" title-bar action. */
 	public void onSearchClick(View v) {
 		UIUtils.goSearch(this);
-	}
-
-	public void showDictionaryList(Uri dictionaryUri) {
-		Cursor cursor = managedQuery(dictionaryUri, DictionaryQuery.PROJECTION,
-				null, null, Dictionary.DEFAULT_SORT);
-
-		if (cursor != null) {
-			CursorAdapter mAdapter = new DictionaryAdapter(this);
-			setListAdapter(mAdapter);
-			startManagingCursor(cursor);
-			mAdapter.changeCursor(cursor);
-		}
 	}
 
 	@Override
@@ -120,7 +138,7 @@ public class DictionaryActivity extends ListActivity {
 			DialogHelper.getUrlOpenDialog(this);
 			return true;
 		case R.id.dictionary_menu_delete:
-			new EraseDataTask().execute((Void) null);
+			deleteDictionary();
 			return true;
 		default:
 			return true;
@@ -136,13 +154,25 @@ public class DictionaryActivity extends ListActivity {
 						.getStringExtra(FileOpenActivity.RESULT_PATH);
 				new DownloadTask(this, R.id.dictionary_menu_file)
 						.execute(filename);
-			}
-			else
+			} else
 				throw new UnsupportedOperationException(
 						"onActivityResult has incorrect code");
 		} else
 			throw new UnsupportedOperationException(
-					"onActivityResult has incorrect code");
+					"onActivityRequest has incorrect code");
+	}
+
+	private void deleteDictionary() {
+		mTitleProgressBar.setVisibility(View.VISIBLE);
+		mHandler.startDelete(Words.CONTENT_URI);
+
+		mTitleProgressBar.setVisibility(View.VISIBLE);
+		mHandler.startDelete(Dictionary.CONTENT_URI);
+	}
+
+	public void updateDictionaryList() {
+		// Start background query to load dictionary
+		mHandler.startQuery(Dictionary.CONTENT_URI, DictionaryQuery.PROJECTION);
 	}
 
 	/**
@@ -168,32 +198,6 @@ public class DictionaryActivity extends ListActivity {
 			((TextView) view.findViewById(R.id.list_item_dictionary_count))
 					.setText("Words count: "
 							+ cursor.getString(DictionaryQuery.DICTIONARY_WORDS_COUNT));
-		}
-	}
-
-	private class EraseDataTask extends AsyncTask<Void, Integer, Integer> {
-
-		protected void onPreExecute() {
-			showDialog(R.id.dictionary_menu_delete);
-		}
-
-		protected Integer doInBackground(Void... params) {
-			try {
-				ContentResolver contentResolver = getContentResolver();
-				contentResolver.delete(Dictionary.CONTENT_URI, "1", null);
-				return contentResolver.delete(Words.CONTENT_URI, "1", null);
-			} catch (Throwable e) {
-				Log.e(TAG,
-						"EraseDataTask.doInBackground(): SqlExeption during delete all rows in table",
-						e);
-			}
-			// TODO How can i do this method void
-			return Integer.MIN_VALUE;
-		}
-
-		protected void onPostExecute(Integer result) {
-			showDictionaryList(Dictionary.CONTENT_URI);
-			dismissDialog(R.id.dictionary_menu_delete);
 		}
 	}
 
