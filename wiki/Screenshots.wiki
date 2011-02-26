@@ -1,7 +1,7 @@
 #summary Here are some screens of app.
 
 ==Instructions==
-Full-size screen are [http://code.google.com/p/tutor/source/browse/trunk/%20tutor%20--username%20plastiv%40gmail.com/LingvoTutor/doc/ here]
+Full-size screens are [http://code.google.com/p/tutor/source/browse/trunk/%20tutor%20--username%20plastiv%40gmail.com/LingvoTutor/doc/ here]
 
 ===Home Activity and Words Activity===
 
