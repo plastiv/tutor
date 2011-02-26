@@ -1,0 +1,10 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Here are some screens of app.
+
+
+= Home Activity =
+
+http://code.google.com/p/tutor/source/browse/trunk/%20tutor%20--username%20plastiv%40gmail.com/LingvoTutor/doc/HomeActivity.png
