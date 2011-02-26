@@ -1,9 +1,5 @@
 #summary Here are some screens of app.
 
-==Instructions==
-
-Check full-size picture by clicking on them. Sreenshost server resizes screens in jpeg preview, so fonts could seem ugly.
-
 ===Home Activity and Words Activity===
 
 http://i1.fastpic.ru/big/2011/0226/7b/60feac56345afa1291b09444a7a6707b.png
