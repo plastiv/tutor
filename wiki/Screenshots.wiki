@@ -1,13 +1,15 @@
 #summary Here are some screens of app.
 
+==Instructions==
+
 Check full-size picture by clicking on them. Sreenshost server resizes screens in jpeg preview, so fonts could seem ugly.
 
-Home Activity and Words Activity
+===Home Activity and Words Activity===
 
 [http://i2.fastpic.ru/big/2011/0226/93/db0c3620c21d68ccae1a905ef12b6693.png http://i2.fastpic.ru/thumb/2011/0226/93/db0c3620c21d68ccae1a905ef12b6693.jpeg]
 [http://i2.fastpic.ru/big/2011/0226/f8/57327fe5f7b81915cf6336b5aa00f4f8.png http://i2.fastpic.ru/thumb/2011/0226/f8/57327fe5f7b81915cf6336b5aa00f4f8.jpeg]
 
-Exercise Activity
+===Exercise Activity===
 
 [http://i1.fastpic.ru/big/2011/0226/b3/a879bb76c20996725747ad6c781684b3.png http://i1.fastpic.ru/thumb/2011/0226/b3/a879bb76c20996725747ad6c781684b3.jpeg]
 
