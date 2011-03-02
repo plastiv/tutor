@@ -53,9 +53,13 @@ public class DialogHelper {
 				.setPositiveButton(activity.getString(R.string.dlg_btn_load),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								new DownloadTask(activity,
-										R.id.dictionary_menu_url).execute(input
-										.getText().toString());
+								// Create and run task and progress dialog
+								activity.mAsyncTaskManager.setupTask(
+										new DownloadTask(activity
+												.getContentResolver(), activity
+												.getResources(),
+												R.id.dictionary_menu_url),
+										input.getText().toString());
 							}
 						});
 

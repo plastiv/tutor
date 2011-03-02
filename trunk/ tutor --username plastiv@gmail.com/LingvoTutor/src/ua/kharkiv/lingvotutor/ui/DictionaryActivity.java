@@ -1,16 +1,16 @@
 package ua.kharkiv.lingvotutor.ui;
 
 import ua.kharkiv.lingvotutor.R;
+import ua.kharkiv.lingvotutor.io.AsyncTaskManager;
 import ua.kharkiv.lingvotutor.io.DownloadTask;
+import ua.kharkiv.lingvotutor.io.OnTaskCompleteListener;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Dictionary;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Words;
 import ua.kharkiv.lingvotutor.utils.DialogHelper;
 import ua.kharkiv.lingvotutor.utils.NotifyingAsyncQueryHandler;
 import ua.kharkiv.lingvotutor.utils.NotifyingAsyncQueryHandler.AsyncQueryListener;
 import ua.kharkiv.lingvotutor.utils.UIUtils;
-import android.app.Dialog;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -31,12 +31,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class DictionaryActivity extends ListActivity implements
-		AsyncQueryListener {
+		AsyncQueryListener, OnTaskCompleteListener {
 
 	private static final int PICK_FILE_OPEN = 0;
 	private NotifyingAsyncQueryHandler mHandler;
 	private DictionaryAdapter mAdapter;
 	private ProgressBar mTitleProgressBar;
+	public AsyncTaskManager mAsyncTaskManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,27 +48,27 @@ public class DictionaryActivity extends ListActivity implements
 
 		((TextView) findViewById(R.id.title_text)).setText(getTitle());
 		mTitleProgressBar = (ProgressBar) findViewById(R.id.title_progress_bar);
-		mTitleProgressBar.setVisibility(View.VISIBLE); // show the progress
-														// circle
 
 		mAdapter = new DictionaryAdapter(this);
 		setListAdapter(mAdapter);
 
 		mHandler = new NotifyingAsyncQueryHandler(getContentResolver(), this);
 
-		Intent intent = getIntent();
-
-		if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+		if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
 			updateDictionaryList();
 		} else
 			throw new UnsupportedOperationException("Unknown Intent.Action");
+
+		// Create manager and set this activity as context and listener
+		mAsyncTaskManager = new AsyncTaskManager(this, this);
+		// Handle task that can be retained before
+		mAsyncTaskManager.handleRetainedTask(getLastNonConfigurationInstance());
 	}
 
 	/** {@inheritDoc} */
 	public void onQueryComplete(int token, Object cookie, Cursor cursor) {
 		// hide the progress circle
 		mTitleProgressBar.setVisibility(View.INVISIBLE);
-
 		startManagingCursor(cursor);
 		mAdapter.changeCursor(cursor);
 	}
@@ -110,28 +111,13 @@ public class DictionaryActivity extends ListActivity implements
 	}
 
 	@Override
-	protected Dialog onCreateDialog(int id) {
-		// Switch what operation dialog to show
-		switch (id) {
-		case R.id.dictionary_menu_delete:
-			return ProgressDialog.show(this, "",
-					getString(R.string.dlg_lbl_deleting), true);
-		case R.id.dictionary_menu_file:
-		case R.id.dictionary_menu_url:
-		case R.id.dictionary_menu_example:
-			return ProgressDialog.show(this, "",
-					getString(R.string.dlg_lbl_loading), true);
-		default:
-			throw new IllegalArgumentException("Unknown operationId " + id);
-		}
-	}
-
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.dictionary_menu_example:
-			new DownloadTask(this, R.id.dictionary_menu_example)
-					.execute("unused");
+			// Create and run task and progress dialog
+			mAsyncTaskManager.setupTask(new DownloadTask(
+					getContentResolver(), getResources(),
+					R.id.dictionary_menu_example), "unusedParametr");
 			return true;
 		case R.id.dictionary_menu_file:
 			if (FileOpenActivity.isExternalStorageAvailible())
@@ -155,6 +141,7 @@ public class DictionaryActivity extends ListActivity implements
 		}
 	}
 
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == PICK_FILE_OPEN) {
 			if (resultCode == RESULT_OK) {
@@ -162,19 +149,16 @@ public class DictionaryActivity extends ListActivity implements
 				// to the user.
 				String filename = data
 						.getStringExtra(FileOpenActivity.RESULT_PATH);
-				new DownloadTask(this, R.id.dictionary_menu_file)
-						.execute(filename);
+				// Create and run task and progress dialog
+				mAsyncTaskManager.setupTask(new DownloadTask(
+						getContentResolver(), getResources(),
+						R.id.dictionary_menu_file), filename);
 			} else
 				throw new UnsupportedOperationException(
 						"onActivityResult has incorrect code");
 		} else
 			throw new UnsupportedOperationException(
 					"onActivityRequest has incorrect code");
-	}
-
-	public void updateDictionaryList() {
-		// Start background query to load dictionary
-		mHandler.startQuery(Dictionary.CONTENT_URI, DictionaryQuery.PROJECTION);
 	}
 
 	private void deleteDictionary() {
@@ -184,6 +168,12 @@ public class DictionaryActivity extends ListActivity implements
 		mTitleProgressBar.setVisibility(View.VISIBLE);
 		mHandler.startDelete(Dictionary.CONTENT_URI);
 	}
+	
+	private void updateDictionaryList() {
+		mTitleProgressBar.setVisibility(View.VISIBLE);
+		// Start background query to load dictionary
+		mHandler.startQuery(Dictionary.CONTENT_URI, DictionaryQuery.PROJECTION);
+	}
 
 	private void showToast(String message) {
 		Toast toast = Toast.makeText(getApplicationContext(), message,
@@ -192,7 +182,6 @@ public class DictionaryActivity extends ListActivity implements
 	}
 
 	private boolean isInternetAvailable() {
-
 		ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		NetworkInfo mWifi = connManager
 				.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -200,6 +189,34 @@ public class DictionaryActivity extends ListActivity implements
 				.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
 		return mWifi.isAvailable() || mMobile.isAvailable();
+	}
+
+	@Override
+	public void onTaskComplete(DownloadTask task) {
+		if (task.isCancelled()) {
+			// Report about cancel
+			// TODO str
+			Toast.makeText(this, "task canceled", Toast.LENGTH_LONG).show();
+		} else {
+			// Get result
+			Boolean result = null;
+			try {
+				result = task.get();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			// Report about result
+			Toast.makeText(
+					this,
+					"Task complete" + result != null ? result.toString()
+							: "null", Toast.LENGTH_LONG).show();
+		}
+	}
+
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		// Delegate task retain to manager
+		return mAsyncTaskManager.retainTask();
 	}
 
 	/**
