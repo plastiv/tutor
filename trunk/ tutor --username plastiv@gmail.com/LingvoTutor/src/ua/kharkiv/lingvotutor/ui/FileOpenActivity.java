@@ -10,6 +10,7 @@ import ua.kharkiv.lingvotutor.utils.UIUtils;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -20,10 +21,9 @@ import android.widget.TextView;
 public class FileOpenActivity extends ListActivity {
 	public static final String RESULT_PATH = "result_path";
 
-	// FIXME check permission for open folder
-	// TODO Put startDirectory to settings for future open
+	private static final String PREFS_NAME = "FileOpenPrefs";
+	private static final String PREFS_FILE_DIRECTORY = "PrefsFileDirectory";
 
-	// TODO Log Activity private static final String TAG = "FileOpenActivity";
 	private static final String FTYPE_XML = ".xml";
 	private static final String FTYPE_ZIP = ".zip";
 
@@ -37,7 +37,7 @@ public class FileOpenActivity extends ListActivity {
 
 		((TextView) findViewById(R.id.title_text)).setText(getTitle());
 
-		browseToRoot();
+		browseToLastSaveOrRoot();
 	}
 
 	/** Handle "home" title-bar action. */
@@ -60,11 +60,14 @@ public class FileOpenActivity extends ListActivity {
 		return Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
 	}
 
-	/**
-	 * This function browses to the root-directory of the file-system.
-	 */
-	private void browseToRoot() {
-		browseTo(Environment.getExternalStorageDirectory());
+	private void browseToLastSaveOrRoot() {
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME,
+				MODE_PRIVATE);
+
+		String savedFileDirectory = settings.getString(PREFS_FILE_DIRECTORY,
+				Environment.getExternalStorageDirectory().getAbsolutePath());
+
+		browseTo(new File(savedFileDirectory));
 	}
 
 	/**
@@ -101,7 +104,8 @@ public class FileOpenActivity extends ListActivity {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
-									FileOpenActivity.this.openFile(aDirectory);
+									FileOpenActivity.this
+											.onOpenFileClick(aDirectory);
 								}
 							});
 
@@ -109,7 +113,15 @@ public class FileOpenActivity extends ListActivity {
 		}
 	}
 
-	private void openFile(File aFile) {
+	private void onOpenFileClick(File aFile) {
+		// Save last used directory to open next time
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString(PREFS_FILE_DIRECTORY, aFile.getParentFile()
+				.getAbsolutePath());
+		editor.commit();
+
+		// return filePath as a result
 		getIntent().putExtra(RESULT_PATH, aFile.getAbsolutePath());
 		setResult(RESULT_OK, getIntent());
 		finish();
@@ -128,9 +140,9 @@ public class FileOpenActivity extends ListActivity {
 				.length();
 
 		for (File currentFile : files) {
-			if (currentFile.isDirectory()
-					|| currentFile.getName().contains(FTYPE_XML)
-					|| currentFile.getName().contains(FTYPE_ZIP))
+			if ((currentFile.isDirectory()
+					|| currentFile.getName().contains(FTYPE_XML) || currentFile
+					.getName().contains(FTYPE_ZIP)) && currentFile.canRead())
 				this.directoryEntries.add(currentFile.getAbsolutePath()
 						.substring(currentPathStringLenght));
 		}
