@@ -1,4 +1,3 @@
-
 package ua.kharkiv.lingvotutor.provider;
 
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.DictionaryColumns;
@@ -20,7 +19,7 @@ public class DictionaryDatabase extends SQLiteOpenHelper {
 	// NOTE: carefully update onUpgrade() when bumping database versions to make
 	// sure user data is saved.
 
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 2;
 
 	interface Tables {
 		String WORDS = "words";
@@ -42,10 +41,11 @@ public class DictionaryDatabase extends SQLiteOpenHelper {
 		db.execSQL("CREATE VIRTUAL TABLE " + Tables.WORDS + " USING fts3 ("
 				+ WordsColumns.WORD_NAME + ", " + WordsColumns.WORD_TRANSLATION
 				+ ", " + WordsColumns.WORD_EXAMPLE + ", "
-				+ WordsColumns.WORD_TRANSCRIPTION + ");");
-		db.execSQL("CREATE VIRTUAL TABLE " + Tables.DICTIONARY + " USING fts3 ("
-				+ DictionaryColumns.DICTIONARY_TITLE + ", " + DictionaryColumns.DICTIONARY_WORDS_COUNT
- + ");");
+				+ WordsColumns.WORD_TRANSCRIPTION + ", "
+				+ WordsColumns.WORD_DICTIONARY_ID + ");");
+		db.execSQL("CREATE VIRTUAL TABLE " + Tables.DICTIONARY
+				+ " USING fts3 (" + DictionaryColumns.DICTIONARY_TITLE + ", "
+				+ DictionaryColumns.DICTIONARY_WORDS_COUNT + ");");
 	}
 
 	@Override
