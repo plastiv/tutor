@@ -2,13 +2,17 @@ package ua.kharkiv.lingvotutor.ui;
 
 import ua.kharkiv.lingvotutor.R;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Dictionary;
-import ua.kharkiv.lingvotutor.provider.DictionaryContract.Words;
+import ua.kharkiv.lingvotutor.utils.AboutDialogBuilder;
 import ua.kharkiv.lingvotutor.utils.UIUtils;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.BaseColumns;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,32 +48,48 @@ public class HomeActivity extends Activity {
 
 	}
 
-	/** Handle "exercise2" button action. */
-	public void onExercise_2Click(View v) {
-		showToast(getString(R.string.toast_not_implemented));
-	}
-
-	/** Handle "settings" button action. */
-	public void onSettingsClick(View v) {
-		showToast(getString(R.string.toast_not_implemented));
-	}
-
-	/** Handle "about" button action. */
-	public void onAboutClick(View v) {
-		showToast("Lingvo Tutor v.0.1 february 2011");
-	}
-
 	/** Handle "search" title-bar action. */
 	public void onSearchClick(View v) {
 		UIUtils.goSearch(this);
 	}
 
-	/** Handle "words" button action. */
-	public void onWordsClick(View v) {
-		if (isDictionaryOpen)
-			startActivity(new Intent(Intent.ACTION_VIEW, Words.CONTENT_URI));
-		else
-			showToast(getString(R.string.toast_open_dictionary_first));
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.home_options_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int itemId = item.getItemId();
+		switch (itemId) {
+		case R.id.home_menu_settings:
+			showToast(getString(R.string.toast_not_implemented));
+			return true;
+		case R.id.home_menu_about:
+			
+			AlertDialog builder;
+			try {
+				builder = AboutDialogBuilder.create(this);
+				builder.show();
+			} catch (NameNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			/*
+			new AlertDialog.Builder(HomeActivity.this)  
+			.setTitle(R.string.app_name)  
+			.setMessage(R.string.txt_about)
+			.setIcon(R.drawable.ic_launcher)  
+			.setPositiveButton(R.string.dlg_btn_ok, null)  
+			.show(); */
+
+			return true;
+		default:
+			// FIXME What is on default menu
+			return true;
+		}
 	}
 
 	private void showToast(String message) {
@@ -79,7 +99,6 @@ public class HomeActivity extends Activity {
 	}
 
 	private void setStatusText() {
-		// FIXME Real count -1
 		Cursor cursor = managedQuery(Dictionary.CONTENT_URI,
 				DictionaryQuery.PROJECTION, null, null, Dictionary.DEFAULT_SORT);
 
@@ -95,14 +114,20 @@ public class HomeActivity extends Activity {
 			((TextView) findViewById(R.id.txt_status_line_1))
 					.setText(getString(R.string.lbl_status_text_1)
 							+ cursor.getString(DictionaryQuery.DICTIONARY_TITLE));
+
+			String nextWordIdStr = cursor
+					.getString(DictionaryQuery.DICTIONARY_WORDS_COUNT);
+			int nextWordId = Integer.parseInt(nextWordIdStr);
+			nextWordId--;
+
 			((TextView) findViewById(R.id.txt_status_line_2))
 					.setText(getString(R.string.lbl_status_text_2)
-							+ cursor.getString(DictionaryQuery.DICTIONARY_WORDS_COUNT));
+							+ Integer.toString(nextWordId));
 		}
 	}
 
 	private interface DictionaryQuery {
-		String[] PROJECTION = { BaseColumns._ID, Dictionary.DICTIONARY_TITLE,
+		String[] PROJECTION = { Dictionary._ID, Dictionary.DICTIONARY_TITLE,
 				Dictionary.DICTIONARY_WORDS_COUNT };
 
 		int DICTIONARY_TITLE = 1;
