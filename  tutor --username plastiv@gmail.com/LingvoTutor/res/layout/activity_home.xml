@@ -36,51 +36,14 @@
 				android:onClick="onExerciseClick"
 				android:text="@string/home_btn_exercise"
 				android:drawableTop="@drawable/home_btn_exercise" />
-				<Button
-				android:id="@+id/home_btn_exercise_2"
-				style="@style/HomeButton"
-				android:onClick="onExercise_2Click"
-				android:text="@string/home_btn_exercise_2"
-				android:drawableTop="@drawable/home_btn_exercise_2" />
-		</LinearLayout>
-
-		<LinearLayout
-			android:orientation="horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_weight="1">
 			<Button
 				android:id="@+id/home_btn_dictionary"
 				style="@style/HomeButton"
 				android:onClick="onDictionaryClick"
 				android:text="@string/home_btn_dictionary"
 				android:drawableTop="@drawable/home_btn_dictionary" />
-			<Button
-				android:id="@+id/home_btn_words"
-				style="@style/HomeButton"
-				android:onClick="onWordsClick"
-				android:text="@string/home_btn_words"
-				android:drawableTop="@drawable/home_btn_words" />
 		</LinearLayout>
-
-		<LinearLayout
-			android:orientation="horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_weight="1">
-			<Button
-				android:id="@+id/home_btn_settings"
-				style="@style/HomeButton"
-				android:onClick="onSettingsClick"
-				android:text="@string/home_btn_settings"
-				android:drawableTop="@drawable/home_btn_settings" />
-			<Button
-				android:id="@+id/home_btn_about"
-				style="@style/HomeButton"
-				android:onClick="onAboutClick"
-				android:text="@string/home_btn_about"
-				android:drawableTop="@drawable/home_btn_about" />
-		</LinearLayout>
+		
 	</LinearLayout>
 
 	<LinearLayout
