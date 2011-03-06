@@ -28,6 +28,8 @@
     <string name="menu_dictionary_url">По ссылке</string>
     <string name="menu_dictionary_example">Из примера</string>
     <string name="menu_dictionary_delete">Удалить текущий</string>    
+    <string name="menu_context_dictionary_delete">Удалить</string>   
+    <string name="menu_context_dictionary_update">Обновить</string>   
     
     <string name="dlg_btn_cancel">Отменить</string> 
     <string name="dlg_btn_ok">Ok</string>     
@@ -46,11 +48,16 @@
     <string name="lbl_status_text_2_empty">Нет слов в словаре</string>
     <string name="lbl_words_list_emplty">Воспользуйтесь меню словаря для загрузки большего количества слов.</string>
     <string name="lbl_search_results">Результаты поиска</string>
+    <string name="lbl_words_count">Кол-во слов: "</string>
     
     <string name="toast_not_implemented">Еще не сделано =)</string>
     <string name="toast_open_dictionary_first">Сначала откройте словарь</string>
     <string name="toast_sdcard_not_available">Карта памяти не доступна</string>
     <string name="toast_no_connection">Нет интернет соединения</string>
+    <string name="toast_words_were_loaded">Загружено слов: %1$d</string>
+    <string name="toast_words_were_deleted">Удалено слов: %1$d</string>
+    <string name="toast_words_are_showed">Найдено слов: %1$d</string>
+    <string name="toast_task_was_canceled">Задача отменена</string>
     
 	<string name="search_label">Lingvo Tutor</string>
 	<string name="search_hint">Поиск по словарю</string>

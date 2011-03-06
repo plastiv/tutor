@@ -8,13 +8,13 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class DownloadTask extends AsyncTask<String, String, Boolean> {
+public class DownloadTask extends AsyncTask<String, String, Integer> {
 	private static final String TAG = "DownloadTask";
 	
 	protected final Resources mResources;
 
 	private int taskId;
-	private Boolean mResult;
+	private Integer mResult;
 	private String mProgressMessage;
 	private ContentResolver mContentResolver;
 	private IProgressTracker mProgressTracker;
@@ -61,12 +61,12 @@ public class DownloadTask extends AsyncTask<String, String, Boolean> {
 
     /* Separate Thread */
     @Override
-	protected Boolean doInBackground(String... params) {
+	protected Integer doInBackground(String... params) {
 
 		// Check if task is cancelled
 		if (isCancelled()) {
 			// This return causes onPostExecute call on UI thread
-			return false;
+			return -1;
 		}
 		
 		// This call causes onProgressUpdate call on UI thread
@@ -75,32 +75,29 @@ public class DownloadTask extends AsyncTask<String, String, Boolean> {
 		try {
 			switch (taskId) {
 			case R.id.dictionary_menu_url:
-				new Downloader(mContentResolver)
+				return new Downloader(mContentResolver)
 						.fromUrl(params[0]);
-				break;
 			case R.id.dictionary_menu_file:
-				new Downloader(mContentResolver)
+				return new Downloader(mContentResolver)
 						.fromFile(params[0]);
-				break;
 			case R.id.dictionary_menu_example:
-				new Downloader(mContentResolver)
+				return new Downloader(mContentResolver)
 						.fromResourse(mResources);
-				break;
 			}
 		} catch (IOException e) {
 			Log.e(TAG, ".doInBackground(): IOExeption", e);
-			return false;
+			return -1;
 		} catch (UnsupportedOperationException e) {
 			Log.e(TAG, ".doInBackground(): UnsupportedOperationException", e);
-			return false;
+			return -1;
 		}
-
-		return true;
+		
+		return -1;
 	}
 
 	/* UI Thread */
 	@Override
-	protected void onPostExecute(Boolean result) {
+	protected void onPostExecute(Integer result) {
 		// Update result
 		mResult = result;
 		// And send it to progress tracker

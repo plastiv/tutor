@@ -5,7 +5,6 @@ import ua.kharkiv.lingvotutor.io.AsyncTaskManager;
 import ua.kharkiv.lingvotutor.io.DownloadTask;
 import ua.kharkiv.lingvotutor.io.OnTaskCompleteListener;
 import ua.kharkiv.lingvotutor.provider.DictionaryContract.Dictionary;
-import ua.kharkiv.lingvotutor.provider.DictionaryContract.Words;
 import ua.kharkiv.lingvotutor.utils.DialogHelper;
 import ua.kharkiv.lingvotutor.utils.NotifyingAsyncQueryHandler;
 import ua.kharkiv.lingvotutor.utils.NotifyingAsyncQueryHandler.AsyncQueryListener;
@@ -16,14 +15,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.BaseColumns;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -32,8 +33,10 @@ import android.widget.Toast;
 
 public class DictionaryActivity extends ListActivity implements
 		AsyncQueryListener, OnTaskCompleteListener {
+	// FIXME Provide mechanizm to select what dictionary delete
 
 	private static final int PICK_FILE_OPEN = 0;
+
 	private NotifyingAsyncQueryHandler mHandler;
 	private DictionaryAdapter mAdapter;
 	private ProgressBar mTitleProgressBar;
@@ -45,6 +48,7 @@ public class DictionaryActivity extends ListActivity implements
 		// Request for the progress bar to be shown in the title
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_dictionary);
+		registerForContextMenu(getListView());
 
 		((TextView) findViewById(R.id.title_text)).setText(getTitle());
 		mTitleProgressBar = (ProgressBar) findViewById(R.id.title_progress_bar);
@@ -66,9 +70,11 @@ public class DictionaryActivity extends ListActivity implements
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onQueryComplete(int token, Object cookie, Cursor cursor) {
 		// hide the progress circle
 		mTitleProgressBar.setVisibility(View.INVISIBLE);
+
 		startManagingCursor(cursor);
 		mAdapter.changeCursor(cursor);
 	}
@@ -78,16 +84,17 @@ public class DictionaryActivity extends ListActivity implements
 	public void onDeleteComplete(int token, Object cookie, int result) {
 		// hide the progress circle
 		mTitleProgressBar.setVisibility(View.INVISIBLE);
+
 		updateDictionaryList();
-		// FIXME Show how much rows were deleted
+		showToast(getString(R.string.toast_words_were_deleted, result));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		if (id >= 0) {
-			// FIXME Dont forget to choose right dictionary in future
-			startActivity(new Intent(Intent.ACTION_VIEW, Words.CONTENT_URI));
+			Uri dictionaryUri = Dictionary.buildWordsUri(id);
+			startActivity(new Intent(Intent.ACTION_VIEW, dictionaryUri));
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -111,13 +118,26 @@ public class DictionaryActivity extends ListActivity implements
 	}
 
 	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenu.ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.dictionary_context_menu, menu);
+
+		Cursor c = mAdapter.getCursor();
+		c.moveToPosition(((AdapterContextMenuInfo) menuInfo).position);
+		menu.setHeaderTitle(c.getString(DictionaryQuery.DICTIONARY_TITLE));
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.dictionary_menu_example:
 			// Create and run task and progress dialog
-			mAsyncTaskManager.setupTask(new DownloadTask(
-					getContentResolver(), getResources(),
-					R.id.dictionary_menu_example), "unusedParametr");
+			mAsyncTaskManager.setupTask(new DownloadTask(getContentResolver(),
+					getResources(), R.id.dictionary_menu_example),
+					"unusedParametr");
 			return true;
 		case R.id.dictionary_menu_file:
 			if (FileOpenActivity.isExternalStorageAvailible())
@@ -134,11 +154,28 @@ public class DictionaryActivity extends ListActivity implements
 				showToast(getString(R.string.toast_no_connection));
 			return true;
 		case R.id.dictionary_menu_delete:
-			deleteDictionary();
+			// FIXME deleteDictionary();
 			return true;
 		default:
 			return true;
 		}
+	}
+
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.dictionary_context_menu_delete:
+			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+					.getMenuInfo();
+			deleteDictionary(info.id);
+			return true;
+		case R.id.dictionary_context_menu_update:
+			// TODO add update dictionary functional
+			AdapterContextMenuInfo info2 = (AdapterContextMenuInfo) item
+					.getMenuInfo();
+			showToast("Update" + Long.toString(info2.id));
+			return true;
+		}
+		return super.onContextItemSelected(item);
 	}
 
 	@Override
@@ -161,18 +198,18 @@ public class DictionaryActivity extends ListActivity implements
 					"onActivityRequest has incorrect code");
 	}
 
-	private void deleteDictionary() {
+	private void deleteDictionary(long id) {
 		mTitleProgressBar.setVisibility(View.VISIBLE);
-		mHandler.startDelete(Words.CONTENT_URI);
 
-		mTitleProgressBar.setVisibility(View.VISIBLE);
-		mHandler.startDelete(Dictionary.CONTENT_URI);
+		Uri dictionaryUri = Dictionary.buildDictionaryUri(id);
+		mHandler.startDelete(dictionaryUri);
 	}
-	
+
 	private void updateDictionaryList() {
 		mTitleProgressBar.setVisibility(View.VISIBLE);
 		// Start background query to load dictionary
-		mHandler.startQuery(Dictionary.CONTENT_URI, DictionaryQuery.PROJECTION);
+		mHandler.startQuery(Dictionary.CONTENT_URI, DictionaryQuery.PROJECTION,
+				Dictionary.DEFAULT_SORT);
 	}
 
 	private void showToast(String message) {
@@ -194,22 +231,19 @@ public class DictionaryActivity extends ListActivity implements
 	@Override
 	public void onTaskComplete(DownloadTask task) {
 		if (task.isCancelled()) {
-			// Report about cancel
-			// TODO str
-			Toast.makeText(this, "task canceled", Toast.LENGTH_LONG).show();
+			// FIXME add functional, that will actually cancel task
+			showToast(getString(R.string.toast_task_was_canceled));
 		} else {
 			// Get result
-			Boolean result = null;
+			Integer result = null;
 			try {
 				result = task.get();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			// Report about result
-			Toast.makeText(
-					this,
-					"Task complete" + result != null ? result.toString()
-							: "null", Toast.LENGTH_LONG).show();
+
+			updateDictionaryList();
+			showToast(getString(R.string.toast_words_were_loaded, result));
 		}
 	}
 
@@ -239,14 +273,20 @@ public class DictionaryActivity extends ListActivity implements
 		public void bindView(View view, Context context, Cursor cursor) {
 			((TextView) view.findViewById(R.id.list_item_dictionary_title))
 					.setText(cursor.getString(DictionaryQuery.DICTIONARY_TITLE));
+
+			String nextWordIdStr = cursor
+					.getString(DictionaryQuery.DICTIONARY_WORDS_COUNT);
+			int nextWordId = Integer.parseInt(nextWordIdStr);
+			nextWordId--;
+
 			((TextView) view.findViewById(R.id.list_item_dictionary_count))
-					.setText("Words count: "
-							+ cursor.getString(DictionaryQuery.DICTIONARY_WORDS_COUNT));
+					.setText(getString(R.string.lbl_words_count)
+							+ Integer.toString(nextWordId));
 		}
 	}
 
 	private interface DictionaryQuery {
-		String[] PROJECTION = { BaseColumns._ID, Dictionary.DICTIONARY_TITLE,
+		String[] PROJECTION = { Dictionary._ID, Dictionary.DICTIONARY_TITLE,
 				Dictionary.DICTIONARY_WORDS_COUNT };
 
 		int DICTIONARY_TITLE = 1;

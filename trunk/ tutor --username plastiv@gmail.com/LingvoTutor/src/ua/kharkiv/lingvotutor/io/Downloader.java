@@ -21,6 +21,7 @@ import ua.kharkiv.lingvotutor.utils.DictionaryParser.Dictionary.Card;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.util.Log;
 
 public class Downloader {
@@ -34,7 +35,7 @@ public class Downloader {
 		mContentResolver = contentResolver;
 	}
 
-	private void loadData(InputStream inputStream) {
+	private int loadData(InputStream inputStream) {
 
 		DictionaryParser.Dictionary dictionary = DictionaryParser
 				.parse(inputStream);
@@ -42,30 +43,38 @@ public class Downloader {
 		if (dictionary != null) {
 
 			ContentResolver contentResolver = mContentResolver;
-			contentResolver.delete(Words.CONTENT_URI, "1", null);
-			contentResolver.delete(Dictionary.CONTENT_URI, "1", null);
 
 			ContentValues newDictionaryValue = new ContentValues();
 			newDictionaryValue.put(Dictionary.DICTIONARY_TITLE,
 					dictionary.getTitle());
 			newDictionaryValue.put(Dictionary.DICTIONARY_WORDS_COUNT,
 					dictionary.getCount());
-			contentResolver.insert(Dictionary.CONTENT_URI, newDictionaryValue);
+
+			Uri dictionaryUri = contentResolver.insert(Dictionary.CONTENT_URI,
+					newDictionaryValue);
+			long dictionaryId = Long.parseLong(Dictionary
+					.getDictionaryId(dictionaryUri));
 
 			List<Card> parseCards = dictionary.getCards();
 
 			for (Card i : parseCards) {
 				ContentValues newValue = new ContentValues();
+				newValue.put(Words.WORD_DICTIONARY_ID, dictionaryId);
 				newValue.put(Words.WORD_NAME, i.getWord());
 				newValue.put(Words.WORD_TRANSLATION, i.getTranslationWord());
 				newValue.put(Words.WORD_EXAMPLE, i.getExample());
 				newValue.put(Words.WORD_TRANSCRIPTION, i.getTranscription());
+
 				contentResolver.insert(Words.CONTENT_URI, newValue);
 			}
+			
+			return parseCards.size();
 		}
+		// TODO Write Else behavior
+		return -1;
 	}
 
-	public void fromFile(String xmlFilename) throws IOException {
+	public int fromFile(String xmlFilename) throws IOException {
 		Log.d(TAG, "fromfile(): start loading");
 		if (xmlFilename.contains(FTYPE_ZIP)) {
 			ZipFile zipfile = new ZipFile(xmlFilename);
@@ -73,25 +82,25 @@ public class Downloader {
 					.hasMoreElements();) {
 				ZipEntry entry = (ZipEntry) e.nextElement();
 				if (entry.getName().contains(FTYPE_XML)) {
-					loadData(zipfile.getInputStream(entry));
-					break;
+					return loadData(zipfile.getInputStream(entry));
 				}
 			}
 		} else if (xmlFilename.contains(FTYPE_XML))
-			loadData(new FileInputStream(xmlFilename));
+			return loadData(new FileInputStream(xmlFilename));
 		else
 			throw new UnsupportedOperationException("Unknow filetype to open");
 
 		Log.d(TAG, "fromfile(): finish loading");
+		// TODO
+		return -1;
 	}
 
-	public void fromResourse(Resources resources) throws IOException {
+	public int fromResourse(Resources resources) throws IOException {
 		Log.d(TAG, "fromResources(): start loading");
-		loadData(resources.openRawResource(R.raw.example));
-		Log.d(TAG, "fromResources(): finish loading");
+		return loadData(resources.openRawResource(R.raw.example));
 	}
 
-	public void fromUrl(String xmlUrl) throws IOException {
+	public int fromUrl(String xmlUrl) throws IOException {
 		Log.d(TAG, "fromUrl(): start loading");
 
 		if (xmlUrl.contains(FTYPE_XML)) {
@@ -111,8 +120,7 @@ public class Downloader {
 						}
 						byte[] bytes = baos.toByteArray();
 						InputStream xmlIs = new ByteArrayInputStream(bytes);
-						loadData(xmlIs);
-						break;
+						return loadData(xmlIs);
 					}
 				}
 			} finally {
@@ -121,10 +129,11 @@ public class Downloader {
 		} else if (xmlUrl.contains(FTYPE_XML)) {
 			// TODO Check that url is correct
 			URL feedUrl = new URL(xmlUrl);
-			loadData(feedUrl.openConnection().getInputStream());
+			return loadData(feedUrl.openConnection().getInputStream());
 		} else
 			throw new UnsupportedOperationException("Unknow filetype to open");
 
 		Log.d(TAG, "fromUrl(): finish loading");
+		return -1;
 	}
 }

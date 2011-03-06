@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -21,6 +20,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class WordsActivity extends ListActivity implements AsyncQueryListener {
 
@@ -52,7 +52,8 @@ public class WordsActivity extends ListActivity implements AsyncQueryListener {
 			// Start background query to load tracks
 			mHandler = new NotifyingAsyncQueryHandler(getContentResolver(),
 					this);
-			mHandler.startQuery(wordsUri, WordsQuery.PROJECTION);
+			mHandler.startQuery(wordsUri, WordsQuery.PROJECTION,
+					Words.DEFAULT_SORT);
 
 		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 
@@ -81,6 +82,8 @@ public class WordsActivity extends ListActivity implements AsyncQueryListener {
 
 		startManagingCursor(cursor);
 		mAdapter.changeCursor(cursor);
+
+		showToast(getString(R.string.toast_words_are_showed, cursor.getCount()));
 	}
 
 	/** {@inheritDoc} */
@@ -104,6 +107,12 @@ public class WordsActivity extends ListActivity implements AsyncQueryListener {
 	/** Handle "search" title-bar action. */
 	public void onSearchClick(View v) {
 		UIUtils.goSearch(this);
+	}
+
+	private void showToast(String message) {
+		Toast toast = Toast.makeText(getApplicationContext(), message,
+				Toast.LENGTH_SHORT);
+		toast.show();
 	}
 
 	/**
@@ -132,7 +141,7 @@ public class WordsActivity extends ListActivity implements AsyncQueryListener {
 	}
 
 	private interface WordsQuery {
-		String[] PROJECTION = { BaseColumns._ID, Words.WORD_NAME,
+		String[] PROJECTION = { Words._ID, Words.WORD_NAME,
 				Words.WORD_TRANSLATION };
 
 		String DEFAULT_SELECTION = Words.WORD_NAME + " MATCH ?";
@@ -143,6 +152,6 @@ public class WordsActivity extends ListActivity implements AsyncQueryListener {
 
 	@Override
 	public void onDeleteComplete(int token, Object cookie, int result) {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 }

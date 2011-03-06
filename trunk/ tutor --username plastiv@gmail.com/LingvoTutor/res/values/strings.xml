@@ -28,6 +28,8 @@
     <string name="menu_dictionary_url">Url</string>
     <string name="menu_dictionary_example">Example</string>
     <string name="menu_dictionary_delete">Delete Current</string>    
+    <string name="menu_context_dictionary_delete">Delete</string>   
+    <string name="menu_context_dictionary_update">Update</string>   
     
     <string name="dlg_btn_cancel">Cancel</string> 
     <string name="dlg_btn_ok">Ok</string>  
@@ -46,11 +48,16 @@
     <string name="lbl_status_text_2_empty">No words in dictionary</string>
     <string name="lbl_words_list_emplty">No words are here. You could download some from dictionary menu.</string>
     <string name="lbl_search_results">Search results for</string>
+    <string name="lbl_words_count">Words count: "</string>
     
     <string name="toast_not_implemented">Not implemented yet =)</string>
     <string name="toast_open_dictionary_first">Open dictionary first</string>
     <string name="toast_sdcard_not_available">SDCard is not available</string>
     <string name="toast_no_connection">No internet connection</string>
+    <string name="toast_words_were_loaded">%1$d words were loaded</string>
+    <string name="toast_words_were_deleted">%1$d words were deleted</string>
+    <string name="toast_words_are_showed">%1$d words are showed</string>
+    <string name="toast_task_was_canceled">Task was canceled</string>
  
 	<string name="search_label">Lingvo Tutor</string>
 	<string name="search_hint">Search the dictionary</string>
