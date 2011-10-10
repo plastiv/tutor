@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<LinearLayout
+		style="@style/TitleBar">
+		<ImageButton
+			style="@style/TitleBarAction"
+			android:contentDescription="@string/description_home"
+			android:src="@drawable/ic_title_home"
+			android:onClick="onHomeClick" />
+
+		<ImageView
+			style="@style/TitleBarSeparator" />
+		<TextView
+			style="@style/TitleBarText" />
+
+		<ImageView
+			style="@style/TitleBarSeparator" />
+		<ImageButton
+			style="@style/TitleBarAction"
+			android:contentDescription="@string/description_search"
+			android:src="@drawable/ic_title_search"
+			android:onClick="onSearchClick" />
+	</LinearLayout>
+
+	<TextView
+		android:gravity="center_horizontal"
+		android:id="@+id/txt_word"
+		android:paddingTop="10dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:paddingBottom="10dp"
+		android:textSize="18dp"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+	<EditText
+		android:id="@+id/edit_translation"
+		android:gravity="center_horizontal"
+		android:textSize="18dp"
+		android:paddingTop="10dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:paddingBottom="10dp"
+		android:layout_width="fill_parent"
+		android:inputType="text"
+		android:imeOptions="actionDone"
+		android:layout_height="wrap_content" />
+	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:gravity="right">
+		<Button
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="@string/btn_tip"
+			android:onClick="onBtnTipClick"
+			android:textSize="18dp" />
+		<Button
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="@string/btn_check"
+			android:onClick="onBtnCheckClick"
+			android:textSize="18dp" />
+	</LinearLayout>
+
+</LinearLayout>

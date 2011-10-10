@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lingvo Tutor</string>
+    
+    <string name="description_search">Поиск</string>
+    <string name="description_home">Домой</string>
+    
+    <string name="title_words">Слова</string>
+    <string name="title_words_detail">Карточка слова</string>
+    <string name="title_dictionary">Словарь</string>
+    <string name="title_exercise">Упражнение</string>
+    <string name="title_fileOpen">Открыть файл</string>
+    
+    <string name="empty_dictionary">Открытых словарей нет. Воспользуйтесь меню.</string>
+    
+    <string name="home_btn_dictionary">Словарь</string>
+    <string name="home_btn_exercise">Упражнение</string>
+    <string name="home_btn_settings">Настройки</string>
+    <string name="home_btn_words">Слова</string>
+    <string name="home_btn_exercise_2">Упражнение</string>
+    <string name="home_btn_about">О программе</string>
+    
+    <string name="btn_check">Проверить</string>
+    <string name="btn_tip">Подсказка</string>
+    
+    <string name="menu_dictionary_open">Открыть словарь</string>
+    <string name="menu_dictionary_file">На карте памяти</string>
+    <string name="menu_dictionary_url">По ссылке</string>
+    <string name="menu_dictionary_example">Из примера</string>
+    <string name="menu_dictionary_delete">Удалить текущий</string>    
+    <string name="menu_context_dictionary_delete">Удалить</string>   
+    <string name="menu_context_dictionary_update">Обновить</string>   
+    <string name="menu_home_settings">Настройки</string>   
+    <string name="menu_home_about">О программе</string> 
+    
+    <string name="dlg_btn_cancel">Отменить</string> 
+    <string name="dlg_btn_ok">Ok</string>     
+    <string name="dlg_btn_load">Загрузить</string>   
+    <string name="dlg_btn_search">Искать</string>
+    <string name="dlg_lbl_file">Открыть файл:</string> 
+    <string name="dlg_lbl_url">Открыть ссылку:</string> 
+    <string name="dlg_lbl_deleting">Удаление...</string> 
+    <string name="dlg_lbl_loading">Загрузка...</string> 
+    <string name="dlg_lbl_fileOpen">Открыть этот файл?\n</string> 
+    
+	<!-- symbol " in string means space   -->
+ 	<string name="lbl_status_text_1">Открыт словарь: "</string>
+    <string name="lbl_status_text_2">Слов в словаре: "</string>
+    <string name="lbl_status_text_1_empty">Нет открытых словарей</string>
+    <string name="lbl_status_text_2_empty">Нет слов в словаре</string>
+    <string name="lbl_words_list_emplty">Воспользуйтесь меню словаря для загрузки большего количества слов.</string>
+    <string name="lbl_search_results">Результаты поиска</string>
+    <string name="lbl_words_count">Кол-во слов: "</string>
+    
+    <string name="toast_not_implemented">Еще не сделано =)</string>
+    <string name="toast_open_dictionary_first">Сначала откройте словарь</string>
+    <string name="toast_sdcard_not_available">Карта памяти не доступна</string>
+    <string name="toast_no_connection">Нет интернет соединения</string>
+    <string name="toast_words_were_loaded">Загружено слов: %1$d</string>
+    <string name="toast_words_were_deleted">Удалено слов: %1$d</string>
+    <string name="toast_words_are_showed">Найдено слов: %1$d</string>
+    <string name="toast_task_was_canceled">Задача отменена</string>
+    
+	<string name="search_label">Lingvo Tutor</string>
+	<string name="search_hint">Поиск по словарю</string>
+	<!-- The description that will show up in the search settings for this source. -->
+	<string name="settings_description">Определения слов</string>
+	
+	<string name="txt_about">Версия: 0.1 &lt;br/>Дата сборки: March 2011&lt;br/>&lt;br/>Исходный код, баг трекер и дополнительная информация находятся на &lt;a href="http://code.google.com/p/tutor/">Google Code&lt;/a>.</string>
+	
+	<string name="filename_up_on_one_level">..</string>
+</resources>

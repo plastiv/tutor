@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/home_root"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<LinearLayout
+		style="@style/TitleBar">
+		<TextView
+			style="@style/TitleBarText" />
+		<ImageView
+			style="@style/TitleBarSeparator" />
+		<ImageButton
+			style="@style/TitleBarAction"
+			android:contentDescription="@string/description_search"
+			android:src="@drawable/ic_title_search"
+			android:onClick="onSearchClick" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:padding="6dip">
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1">
+			<Button
+				android:id="@+id/home_btn_exercise"
+				style="@style/HomeButton"
+				android:onClick="onExerciseClick"
+				android:text="@string/home_btn_exercise"
+				android:drawableTop="@drawable/home_btn_exercise" />
+			<Button
+				android:id="@+id/home_btn_dictionary"
+				style="@style/HomeButton"
+				android:onClick="onDictionaryClick"
+				android:text="@string/home_btn_dictionary"
+				android:drawableTop="@drawable/home_btn_dictionary" />
+		</LinearLayout>
+		
+	</LinearLayout>
+
+	<LinearLayout
+		style="@style/StatusBar">
+		<TextView
+			android:id="@+id/txt_status_line_1"
+			style="@style/StatusBarText"/>
+		<TextView
+			android:id="@+id/txt_status_line_2"
+			style="@style/StatusBarText" />
+	</LinearLayout>
+
+</LinearLayout>
